@@ -1,6 +1,8 @@
 'use server'
 
+import { client } from "@/lib/prisma"
 import { auth, currentUser } from "@clerk/nextjs/server"
+
 
 export const onAuthenticateUser = async () => {
     try {
@@ -10,9 +12,68 @@ export const onAuthenticateUser = async () => {
         return {status: 403}
     }
 
+    const userExists = await client.user.findUnique({
+        where: {
+            clerkId: user.id
+        },
+        include: {
+            workspace: {
+                where: {
+                    User: {
+                        clerkId: user.id
+                    },
+                },
+            },
+        },
+    })
+    if (userExists) {
+        return {status: 200, user: userExists}
+    }
+
+        const newUser = await client.user.create({
+            data: {
+                clerkId: user.id,
+                email: user.emailAddresses[0].emailAddress,
+                firstname: user.firstName,
+                lastname: user.lastName,
+                image: user.imageUrl,
+                studio: {
+                    create: {},
+                },
+                subscription: {
+                    create: {},
+                },
+                workspace: {
+                    create: {
+                        name: `${user.firstName}'s Workspace`,
+                        type: 'PERSONAL',
+                    },
+                },
+            },
+            include: {
+                workspace: {
+                    where: {
+                        User: {
+                            clerkId: user.id
+                        },
+                    },
+                },
+                subscription: {
+                    select: {
+                        plan: true,
+                    },
+                },
+            },
+        })
+        if (newUser) {
+            return {status: 200, user: newUser}
+        }
+        return {status: 400}
+    }
     
-} catch (error) {
     
+ catch (error) {
+    return {status: 500}
 }
     
 }
