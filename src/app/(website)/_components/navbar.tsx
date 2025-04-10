@@ -3,9 +3,8 @@ import React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-type Props = {
-    children: React.ReactNode
-}
+
+type Props = {}
 
 const LandingPageNavBar = (props: Props) => {
     return (

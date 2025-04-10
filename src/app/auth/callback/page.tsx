@@ -2,9 +2,9 @@ import { onAuthenticateUser } from "@/actions/user"
 import { redirect } from "next/navigation"
 import React from "react"
 
-type Props = {}
 
-const DashboardPage = async (props: Props) => {
+
+const AuthCallbackPage = async () => {
 
     //Authentication
     const auth = await onAuthenticateUser()
@@ -14,7 +14,7 @@ const DashboardPage = async (props: Props) => {
     if(auth.status === 400 || auth.status === 404 || auth.status === 500) {
         return redirect('/auth/sign-in')
     }
-    
+   
 }
 
-export default DashboardPage
+export default AuthCallbackPage
