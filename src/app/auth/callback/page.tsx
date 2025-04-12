@@ -8,6 +8,7 @@ const AuthCallbackPage = async () => {
 
     //Authentication
     const auth = await onAuthenticateUser()
+    console.log(auth)
     if(auth.status === 200 || auth.status === 201) {
         return redirect(`/dashboard/${auth.user?.workspace[0].id}`)
     }
