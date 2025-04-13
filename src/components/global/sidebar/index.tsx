@@ -30,6 +30,8 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
         router.push(`/dashboard/${value}`)
     }
 
+    const currentWorkspace = workspace?.workspace.find((workspace) => workspace.id === activeWorkspaceId)
+
     console.log(activeWorkspaceId)
 
     return (
@@ -61,7 +63,7 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
                 </SelectGroup>
             </SelectContent>
            </Select>
-           <Modal trigger={
+        {  currentWorkspace?.type==="PUBLIC" && workspace.subscription?.plan==="PRO" && ( <Modal trigger={
             <span className='text-sm cursor-pointer flex items-center justify-center bg-neutral-800/90 hover:bg-neutral-800/60 w-full rounded-sm p-[5px] gap-2'> 
                 <PlusCircle size={15} className='text-neutral-800/90 fill-neutral-500' />
                 <span className='text-neutral-400 font-semibold text-xs'>Invite to workspace</span>
@@ -72,7 +74,14 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
            >
             <Search workspaceId={activeWorkspaceId}/>
            </Modal>
-            
+        )
+        }
+        <p className="w-full text-[#9D9D9D] font-bold mt-4">
+            Menu
+        </p>
+        <nav className="w-full">
+            <ul></ul>
+        </nav>
         </div>
         
     )
