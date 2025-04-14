@@ -74,7 +74,7 @@ export const getNotifications = async () => {
         if(!user) {
             return {status: 404}
         }
-        const notifications = await client.notification.findUnique({
+        const notifications = await client.user.findUnique({
             where: {
                 clerkId: user.id,
             },

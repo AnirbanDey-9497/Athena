@@ -11,7 +11,8 @@ type Props = {
 }
 
 const SidebarItem = ({title, href, icon, selected, notifications}: Props) => {
-    return <li className="cursor-pointer my-[5px]">
+    return (
+    <li className="cursor-pointer my-[5px]">
         <Link 
         href={href}
         className={cn('flex items-center justify-between group rounded-lg hover:bg-[#1D1D1D]', selected ? 'bg-[#1D1D1D]' : '' )} >
@@ -21,6 +22,7 @@ const SidebarItem = ({title, href, icon, selected, notifications}: Props) => {
             </div>
         </Link>
     </li>
+    )
 }
 
-export default SidebarItem;
+export default SidebarItem

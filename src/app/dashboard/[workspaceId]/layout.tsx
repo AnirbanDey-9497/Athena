@@ -15,11 +15,11 @@ const Layout = async ({params: {workspaceId},children}: Props) => {
 
     //Check if user is authenticated and has a workspace
     if(!auth.user?.workspace) {
-        return redirect('/auth/sign-in')
+         redirect('/auth/sign-in')
     }
 
     if(!auth.user.workspace.length) {
-        return redirect('/auth/sign-in')
+         redirect('/auth/sign-in')
     }
 
     //Check if users have access to the workspace
