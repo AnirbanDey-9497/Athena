@@ -13,7 +13,7 @@ const LandingPageNavBar = (props: Props) => {
                 <Menu className="w-8 h-8" />
                 <Image 
                 alt="logo"
-                src="/evo-logo.png"
+                src="/opal-logo.svg"
                 width={40}
                 height={40}
                 />

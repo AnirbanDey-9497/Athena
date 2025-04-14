@@ -11,7 +11,7 @@ export default clerkMiddleware(async (auth, req) => {
     if (isProtectedRoute(req)) {
       auth.protect()
     }
-  });
+  })
 
 export const config = {
   matcher: [
@@ -20,4 +20,4 @@ export const config = {
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],
-};
+}

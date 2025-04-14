@@ -38,10 +38,10 @@ return (
         </div> 
      ) : !onUsers ? (
         <p className="text-center text-sm text-[#a4a4a4]">No users found</p>
-        )   : ( 
-            <div>
-                {onUsers.map((user) => (
-                    <div key={user.id} className='flex gap-x-3 items-center border-2 w-full p-3 rounded-xl'>
+     ) : (
+        <div>
+            {onUsers.map((user) => (
+                <div key={user.id} className='flex gap-x-3 items-center border-2 w-full p-3 rounded-xl'>
                     <Avatar>
                         <AvatarImage src={user.image as string}/>
                         <AvatarFallback>
@@ -58,12 +58,9 @@ return (
                         </Button>
                     </div>
                 </div>
-                ))}
-            </div>
-         )
-     
-        
-    }
+            ))}
+        </div>
+     )}
 </div>
 )
 }

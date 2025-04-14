@@ -83,7 +83,7 @@ export const getAllUserVideos = async (workspaceId: string) => {
         }
         const videos = await client.video.findMany({
             where: {
-                OR: [{workspaceId}, {folder: {workspaceId}}],
+                OR: [{workspaceId}, {folder: workspaceId}],
             },
             select: {
                 id: true,
@@ -123,44 +123,62 @@ export const getWorkSpaces = async () => {
         const user = await currentUser()
         if(!user) {
             return {
-                status: 404
+                status: 404,
+                data: null
             }
         }   
-        const workSpaces = await client.workSpace.findUnique({
+        const workSpaces = await client.user.findFirst({
             where: {
-                clerkId: user.id,
+                OR: [
+                    { clerkId: user.id },
+                    { email: user.emailAddresses[0].emailAddress }
+                ]
             },
             select: {
                 subscription: {
                     select: {
                         plan: true,
+                    },
                 },
-            },
-            workspace: {
-                select: {
-                    id: true,
-                    name: true,
-                    type: true,
-                },
-            },
-           members: {
-            select: {
-                WorkSpace: {
+                workspace: {
                     select: {
                         id: true,
                         name: true,
                         type: true,
                     },
                 },
+                members: {
+                    select: {
+                        WorkSpace: {
+                            select: {
+                                id: true,
+                                name: true,
+                                type: true,
+                            },
+                        },
+                    },
+                },
             },
-           },
-        }, 
         })
         if(workSpaces) {
-            return {status: 200, data: workSpaces}
+            return {
+                status: 200, 
+                data: {
+                    workspace: workSpaces.workspace,
+                    members: workSpaces.members,
+                    subscription: workSpaces.subscription
+                }
+            }
         }
-        
+        return {
+            status: 404,
+            data: null
+        }
     } catch (error) {
-        return {status: 400}
+        console.error('Error in getWorkSpaces:', error)
+        return {
+            status: 400,
+            data: null
+        }
     }
 }

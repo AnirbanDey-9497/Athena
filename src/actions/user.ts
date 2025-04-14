@@ -7,6 +7,11 @@ export const onAuthenticateUser = async () => {
     try {
         const user = await currentUser()
         console.log('Clerk user:', user?.id)
+        console.log('User details:', {
+            firstName: user?.firstName,
+            lastName: user?.lastName,
+            email: user?.emailAddresses[0]?.emailAddress
+        })
 
         if (!user) {
             console.error('No Clerk user found')
@@ -14,22 +19,38 @@ export const onAuthenticateUser = async () => {
         }
 
         // First check if user exists by email
-        const existingUser = await client.user.findFirst({
+        const userExist = await client.user.findFirst({
             where: {
-                email: user.emailAddresses[0].emailAddress
+                OR: [
+                    { clerkId: user.id },
+                    { email: user.emailAddresses[0].emailAddress }
+                ]
             },
             include: {
                 workspace: true
             },
         })
 
-        if (existingUser) {
-            console.log('Existing user found by email:', existingUser.id)
-            return { status: 200, user: existingUser }
+        if (userExist) {
+            console.log('Existing user found:', userExist)
+            // If user exists but doesn't have clerkId, update it
+            if (!userExist.clerkId) {
+                const updatedUser = await client.user.update({
+                    where: { id: userExist.id },
+                    data: { clerkId: user.id },
+                    include: {
+                        workspace: true
+                    },
+                })
+                return { status: 200, user: updatedUser }
+            }
+            return { status: 200, user: userExist }
         }
 
         // If no user exists with that email, create a new one
         console.log('Creating new user for:', user.id)
+        
+        // Create the user first
         const newUser = await client.user.create({
             data: {
                 clerkId: user.id,
@@ -43,27 +64,52 @@ export const onAuthenticateUser = async () => {
                 subscription: {
                     create: {},
                 },
-                workspace: {
-                    create: {
-                        name: `${user.firstName}'s Workspace`,
-                        type: 'PERSONAL',
+            },
+        })
+        console.log('Created new user:', newUser)
+
+        // Then create and connect the workspace
+        const workspaceName = user.firstName ? `${user.firstName}'s Workspace` : 'My Workspace'
+        console.log('Creating workspace with name:', workspaceName)
+        
+        const workspace = await client.workSpace.create({
+            data: {
+                name: workspaceName,
+                type: 'PERSONAL',
+                User: {
+                    connect: {
+                        id: newUser.id
+                    }
+                }
+            }
+        })
+        console.log('Created workspace:', workspace)
+
+        // Fetch the complete user data
+        const completeUser = await client.user.findUnique({
+            where: {
+                id: newUser.id
+            },
+            include: {
+                workspace: true,
+                subscription: {
+                    select: {
+                        plan: true,
                     },
                 },
             },
-            include: {
-                workspace: true
-            },
         })
 
-        if (newUser) {
-            console.log('New user created:', newUser.id)
-            return { status: 201, user: newUser }
+        if (!completeUser?.workspace || completeUser.workspace.length === 0) {
+            console.error('Workspace connection failed')
+            return { status: 500 }
         }
 
-        console.error('Failed to create new user')
-        return { status: 400 }
+        console.log('Complete user data:', completeUser)
+        return { status: 201, user: completeUser }
     } catch (error) {
         console.error('Error in onAuthenticateUser:', error)
+        console.error('Error details:', error)
         return { status: 500 }
     }
 }
@@ -72,7 +118,15 @@ export const getNotifications = async () => {
     try {
         const user = await currentUser()
         if(!user) {
-            return {status: 404}
+            return {
+                status: 404,
+                data: {
+                    notification: [],
+                    _count: {
+                        notification: 0
+                    }
+                }
+            }
         }
         const notifications = await client.user.findUnique({
             where: {
@@ -87,12 +141,37 @@ export const getNotifications = async () => {
                 },
             },
         })
-        if(notifications && notifications.notification.length > 0) {
-            return {status: 200, data: notifications}
+        if(notifications) {
+            return {
+                status: 200, 
+                data: {
+                    notification: notifications.notification || [],
+                    _count: {
+                        notification: notifications._count?.notification || 0
+                    }
+                }
+            }
         }
-        return {status: 404, data: []}
+        return {
+            status: 404,
+            data: {
+                notification: [],
+                _count: {
+                    notification: 0
+                }
+            }
+        }
     } catch (error) {
-        return {status: 400, data: []}
+        console.error('Error in getNotifications:', error)
+        return {
+            status: 400,
+            data: {
+                notification: [],
+                _count: {
+                    notification: 0
+                }
+            }
+        }
     }
 }   
 

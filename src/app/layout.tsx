@@ -19,22 +19,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <ClerkProvider>
+    <html lang="en" >
     <body className={`${manrope.className} bg-[#171717]`}>
-      <ClerkProvider>
+      
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
-          enableSystem
           disableTransitionOnChange
         >
           <ReactQueryProvider>
             {children}
           </ReactQueryProvider>
         </ThemeProvider>
-      </ClerkProvider>
+      
     </body>
   </html>
-  
-  );
+  </ClerkProvider>
+  )
 }
