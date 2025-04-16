@@ -13,9 +13,10 @@ const LandingPageNavBar = (props: Props) => {
                 <Menu className="w-8 h-8" />
                 <Image 
                 alt="logo"
-                src="/opal-logo.svg"
+                src="/evo-logo.png"
                 width={40}
                 height={40}
+                className="rounded-lg"
                 />
                 Evo
             </div>
@@ -27,12 +28,12 @@ const LandingPageNavBar = (props: Props) => {
                  >
                     Home
                     </Link>
-                <Link href="/">Pricing</Link>
-                <Link href="/">Contact</Link>
+                <Link href="/" className="text-white hover:text-neutral-300 transition">Pricing</Link>
+                <Link href="/" className="text-white hover:text-neutral-300 transition">Contact</Link>
             </div>
             <Link href="/auth/sign-in">
-            <Button className="text-base flex gap-x-2">
-                <User fill="#000" />
+            <Button className="text-base flex gap-x-2 bg-white text-black hover:bg-neutral-200">
+                <User className="h-5 w-5" />
                 Login
             </Button>
             </Link>

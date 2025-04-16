@@ -9,6 +9,7 @@ import { getWorkSpaces } from '@/actions/workspace'
 import Modal from '../modal'
 import { MENU_ITEMS } from '@/constants'
 import { PlusCircle, Menu } from 'lucide-react'
+import Loader from '../loader'
 import Search from '../search'
 import SidebarItem from './sidebar-item'
 import { getNotifications } from '@/actions/user'
@@ -207,7 +208,9 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
                             Unlock AI features like transcription, AI summary, and more.
                         </p>
                         <Button variant="default" className="w-full mt-2 bg-white text-black hover:bg-neutral-200 h-8 text-xs rounded-md">
-                            Upgrade
+                            <Loader color='#0000' state={false}>
+                                Upgrade
+                            </Loader>
                         </Button>
                     </div>
                 )}

@@ -4,13 +4,15 @@ import { redirect } from "next/navigation"
 import React from "react"
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query"
 import Sidebar from "@/components/global/sidebar"
+import GlobalHeader from "@/components/global/global-header"
 
 type Props = {
     params: { workspaceId: string }
     children: React.ReactNode
 }
 
-const Layout = async ({params: {workspaceId}, children}: Props) => {
+const Layout = async ({ params, children }: Props) => {
+    const workspaceId = params.workspaceId
     const auth = await onAuthenticateUser()
 
     // Check if user is authenticated and has a workspace
@@ -46,18 +48,23 @@ const Layout = async ({params: {workspaceId}, children}: Props) => {
             queryFn: () => getWorkSpaces(),
         }),
         query.prefetchQuery({
-            queryKey: ['user-notifications'],
+            queryKey: ['notifications'],
             queryFn: () => getNotifications(),
         })
     ])
 
     return (
-        <div className="flex h-screen w-screen">
-            <HydrationBoundary state={dehydrate(query)}>
+        <HydrationBoundary state={dehydrate(query)}>
+            <div className="flex h-screen w-screen">
                 <Sidebar activeWorkspaceId={workspaceId} />
-                {children}
-            </HydrationBoundary>
-        </div>
+                <div className="w-full pt-28 p-6 overflow-y-scroll overflow-x-hidden">
+                    <GlobalHeader workspace={hasAccess.data.workspace} />
+                    <div className="mt-4">
+                        {children}
+                    </div>
+                </div>
+            </div>
+        </HydrationBoundary>
     )
 }
 

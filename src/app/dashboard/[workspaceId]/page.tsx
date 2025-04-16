@@ -1,10 +1,24 @@
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import React from "react"
 
-type Props = {}
+type Props = {
+    params: {workspaceId: string}
+}
 
-const Page = (props: Props) => {
+const Page = ({params}: Props) => {
     return (
-    <div></div>
+    <div>
+        <Tabs defaultValue="videos"
+        className="mt-6">
+            <div className="flex w-full justify-between items-center">
+                <TabsList className="bg-transparent gap-2 pl-0">
+                    <TabsTrigger className="p-[13px] px-6 rounded-full data-[state=active]:bg-[#252525]" value="videos"> Videos</TabsTrigger>
+                    <TabsTrigger value="archive"> Archive</TabsTrigger>
+                </TabsList>
+
+            </div>
+        </Tabs>
+    </div>
     )
 }
 
