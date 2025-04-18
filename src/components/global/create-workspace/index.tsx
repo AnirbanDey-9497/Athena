@@ -6,6 +6,7 @@ import React from "react"
 import Modal from "../modal"
 import { Button } from "@/components/ui/button"
 import FolderPlusDuotone from "@/components/icons/folder-plus-duotone"
+import WorkspaceForm from "@/components/forms/workspace-forms"
 
 type Props = {}
 
@@ -46,8 +47,10 @@ const CreateWorkspace = (props: Props) => {
                         <FolderPlusDuotone />
                         <span>Create Workspace</span>
                     </Button>
+                    
                 }
             >
+                <WorkspaceForm />
                 
             </Modal>
         )
