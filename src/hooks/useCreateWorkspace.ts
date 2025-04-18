@@ -2,10 +2,13 @@
 import { createWorkspace } from "@/actions/workspace"
 import { useMutationData } from "./useMutationData"
 import useZodForm from "./useZodForm"
+import { workspaceSchema } from "@/components/forms/workspace-forms/schema"
 
 export const useCreateWorkspace = () => {
-    const {} = useMutationData(['create-workspace'], (data: { name:string}) =>
+    const {mutate, isPending} = useMutationData(['create-workspace'], (data: { name:string}) =>
         createWorkspace(data.name), 'user-workspaces'
     )
-    const {} = useZodForm
+    const {errors, onFormSubmit, register} = useZodForm(workspaceSchema, mutate)
+
+    return {errors, onFormSubmit, register, isPending}
 }
