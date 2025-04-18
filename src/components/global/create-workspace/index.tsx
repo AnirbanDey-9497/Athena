@@ -30,11 +30,11 @@ const CreateWorkspace = (props: Props) => {
         return null
     }
 
-    // if(plan.subscription.plan==='FREE') {
-    //     return <></>
-    // }
+    if(plan.subscription.plan==='FREE') {
+        return <></>
+    }
 
-    // if(plan.subscription.plan==='PRO') {
+    if(plan.subscription.plan==='PRO') {
         return (
             <Modal
                 title="Create a Workspace"
@@ -56,8 +56,8 @@ const CreateWorkspace = (props: Props) => {
         )
     }
 
-//    return <div>Create Workspace</div>
-//}
+   return <div>Create Workspace</div>
+}
 
 export default CreateWorkspace
 
