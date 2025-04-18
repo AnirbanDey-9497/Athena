@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import Image from 'next/image'
-import { userQueryData } from '@/hooks/userQueryData'
+import { useQueryData } from '@/hooks/useQueryData'
 import { Select, SelectContent, SelectGroup, SelectLabel, SelectTrigger, SelectValue, SelectItem } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { useRouter, usePathname } from 'next/navigation'
@@ -9,6 +9,7 @@ import { getWorkSpaces } from '@/actions/workspace'
 import Modal from '../modal'
 import { MENU_ITEMS } from '@/constants'
 import { PlusCircle, Menu } from 'lucide-react'
+import { FolderPlusDuotone } from '@/components/icons'
 import Loader from '../loader'
 import Search from '../search'
 import SidebarItem from './sidebar-item'
@@ -56,9 +57,9 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
     const pathname = usePathname()
     const { isLoaded, user } = useUser()
 
-    const {data: response, isFetched} = userQueryData(['user-workspaces'], getWorkSpaces)
+    const {data: response, isFetched} = useQueryData(['user-workspaces'], getWorkSpaces)
     const menuItems = MENU_ITEMS(activeWorkspaceId)
-    const {data: notificationsData} = userQueryData(['notifications'], getNotifications)
+    const {data: notificationsData} = useQueryData(['notifications'], getNotifications)
 
     const workspaceData = response as WorkspaceResponse
     const workspaceInfo = workspaceData?.data
@@ -154,11 +155,12 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
                     <p className="text-neutral-500 font-medium text-xs">Workspaces</p>
 
                     {workspaceInfo?.workspace?.length === 1 && workspaceInfo.members?.length === 0 && (
-                        <p className="text-neutral-600 text-xs">
+                        <div className="flex items-center gap-2 text-neutral-600 text-xs">
+                            <FolderPlusDuotone />
                             {workspaceInfo.subscription?.plan === 'FREE'
                                 ? 'Upgrade to create workspaces'
                                 : 'No Workspaces'}
-                        </p>
+                        </div>
                     )}
 
                     <nav className="w-full">

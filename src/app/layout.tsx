@@ -20,21 +20,19 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="en" >
-    <body className={`${manrope.className} bg-[#171717]`}>
-      
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          disableTransitionOnChange
-        >
-          <ReactQueryProvider>
-            {children}
-          </ReactQueryProvider>
-        </ThemeProvider>
-      
-    </body>
-  </html>
-  </ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body className={manrope.className}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            disableTransitionOnChange
+          >
+            <ReactQueryProvider>
+              {children}
+            </ReactQueryProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

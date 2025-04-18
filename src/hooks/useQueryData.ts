@@ -1,6 +1,6 @@
 import { QueryKey, QueryFunction, Enabled } from "@tanstack/react-query"
 import { useQuery } from "@tanstack/react-query"
-export const userQueryData = (queryKey:  QueryKey,
+export const useQueryData = (queryKey:  QueryKey,
     queryFn:  QueryFunction,
     enabled?: Enabled) => {
     const {data, isPending, isFetched, refetch, isFetching} = useQuery({
