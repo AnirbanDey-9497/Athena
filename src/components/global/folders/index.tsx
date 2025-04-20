@@ -1,15 +1,21 @@
+
 import FolderDuotone from '@/components/icons/folder-duotone'
 import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'
 import React from 'react'
 import Folder from './folder'
-
+import { useQueryData } from '@/hooks/useQueryData'
+import { getWorkspaceFolders } from '@/actions/workspace'
+import { useMutationDataState } from '@/hooks/useMutationData'
 type Props = {
     workspaceId: string
 }
 
 const Folders = ({workspaceId}: Props) => {
     // get folders
+    const {data, isFetched} = useQueryData(['workspace-folders'], () => getWorkspaceFolders(workspaceId))
+
+    const {latestVariables} = useMutationDataState(['workspace-folders'])
     // optimistic variable
     return (
         <div className="flex flex-col gap-4">

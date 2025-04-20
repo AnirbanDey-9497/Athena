@@ -30,6 +30,7 @@ const Folder = ({name, id, optimistic, count}: Props) => {
     const {mutate, isPending} = useMutationData(['rename-folders'], (data: {name: string})=> renameFolders(id, data.name), 'workspace-folders', Renamed)
 
     const handleFolderClick = () => {
+        if(onRename) return
         router.push(`${pathname}/folder/${id}`)
     }
 
@@ -38,7 +39,7 @@ const Folder = ({name, id, optimistic, count}: Props) => {
         Rename()
     }
 
-    const updateFolderName = (e: Event) => {
+    const updateFolderName = (e: React.FocusEvent<HTMLInputElement>) => {
         if(inputRef.current && folderCardRef.current) {
             if(!inputRef.current.contains(e.target as Node | null) && !folderCardRef.current.contains(e.target as Node | null)) {
                 if(inputRef.current.value) {
@@ -57,7 +58,7 @@ const Folder = ({name, id, optimistic, count}: Props) => {
             
             <Loader state={false}>
                 <div className="flex flex-col gap-[1px]">
-                    {onRename ? <Input autoFocus placeholder={name} className="border-none underline text-base w-full outline-none text-neutral-300 bg-transparent p-0" ref={inputRef}/> : (
+                    {onRename ? <Input onBlur={(e: React.FocusEvent<HTMLInputElement>) => updateFolderName(e)} autoFocus placeholder={name} className="border-none text-base w-full outline-none text-neutral-300 bg-transparent p-0" ref={inputRef}/> : (
                         <p 
                         onClick={(e) => e.stopPropagation()}
                         className="text-neutral-300"
