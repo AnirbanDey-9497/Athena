@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import Loader from '../loader'
 import FolderDuotone from '@/components/icons/folder-duotone'
-import { useMutationData } from '@/hooks/useMutationData'
+import { useMutationData, useMutationDataState } from '@/hooks/useMutationData'
 import { renameFolders } from '@/actions/workspace'
 import { Input } from '@/components/ui/input'
 
@@ -16,34 +16,28 @@ type Props = {
     workspaceId: string
 }
 
-const Folder = ({name, id, optimistic, count, workspaceId}: Props) => {
+const Folder = ({ id, name, optimistic, count, workspaceId }: Props) => {
     const inputRef = useRef<HTMLInputElement | null>(null)
     const folderCardRef = useRef<HTMLDivElement | null>(null)
-
-    const pathname = usePathname()
+    const pathName = usePathname()
     const router = useRouter()
-
     const [onRename, setOnRename] = useState(false)
 
     const Rename = () => setOnRename(true)
     const Renamed = () => setOnRename(false)
 
-    const {mutate, isPending} = useMutationData(
+    const { mutate, isPending } = useMutationData(
         ['rename-folders'],
-        async (data: {name: string}) => {
-            const response = await renameFolders(id, data.name)
-            if (response.status !== 200) {
-                throw new Error('Failed to rename folder')
-            }
-            return response
-        },
+        (data: { name: string }) => renameFolders(id, data.name),
         ['workspace-folders', workspaceId],
         Renamed
     )
 
+    const { latestVariables } = useMutationDataState(['rename-folders'])
+
     const handleFolderClick = () => {
         if(onRename) return
-        router.push(`${pathname}/folder/${id}`)
+        router.push(`${pathName}/folder/${id}`)
     }
 
     const handleNameDoubleClick = (e: React.MouseEvent<HTMLParagraphElement>) => {
