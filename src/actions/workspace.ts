@@ -52,7 +52,7 @@ export const getWorkspaceFolders = async (workspaceId: string) => {
     try {
         const isFolders = await client.folder.findMany({
             where: {
-                 workspaceId,
+                workSpaceId: workspaceId,
             },
             include: {
                 _count: {
@@ -65,10 +65,12 @@ export const getWorkspaceFolders = async (workspaceId: string) => {
         if(isFolders && isFolders.length > 0) {
             return {
                 status: 200,
-                data:  isFolders }
+                data: isFolders 
             }
+        }
         return {status: 404, data: []}
     } catch (error) {
+        console.error('Error in getWorkspaceFolders:', error)
         return {status: 403, data: []}
     }
 }
@@ -235,13 +237,51 @@ export const createWorkspace = async (name: string) => {
             },
             data: {
                 name,
+            },
+            include: {
+                _count: {
+                    select: {
+                        videos: true
+                    }
+                }
             }
         })
         if(folder) {
-            return {status: 200, data: 'Folder renamed'}
+            return {status: 200, data: folder}
         }
-        return {status: 404, data: 'Folder does not exist'}
+        return {status: 404, data: null}
     } catch(error) {
-        return {status: 500, data: 'Oops! something went wrong'}
+        console.error('Error in renameFolders:', error)
+        return {status: 500, data: null}
+    }
+}
+
+export const createFolder = async (workspaceId: string) => {
+    console.log('createFolder called with workspaceId:', workspaceId)
+    try {
+        const isNewFolder = await client.folder.create({
+            data: {
+                name: 'Untitled',
+                workSpaceId: workspaceId,
+            },
+            include: {
+                _count: {
+                    select: {
+                        videos: true
+                    }
+                }
+            }
+        })
+        console.log('Folder creation result:', isNewFolder)
+        if (isNewFolder) {
+            return { 
+                status: 200, 
+                data: [isNewFolder]
+            }
+        }
+        return { status: 400, data: [] }
+    } catch (error) {
+        console.error('Error in createFolder:', error)
+        return { status: 500, data: [] }
     }
 }
