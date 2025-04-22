@@ -6,9 +6,11 @@ import CopyLink from './copy-link'
 import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Dot, Share2, User } from 'lucide-react'
+import { useUser } from "@clerk/nextjs";
 
 type Props = {
   User: {
+    id?: string
     firstname: string | null
     lastname: string | null
     image: string | null
@@ -26,6 +28,7 @@ type Props = {
 }
 
 const VideoCard = (props: Props) => {
+  const { user } = useUser();
   const daysAgo = Math.floor(
     (new Date().getTime() - props.createdAt.getTime()) / (24 * 60 * 60 * 1000)
   )
@@ -49,7 +52,7 @@ const VideoCard = (props: Props) => {
           />
         </div>
         <Link
-          href={`/dashboard/${props.workspaceId}/video/${props.id}`}
+          href={`/preview/${props.id}`}
           className="hover:bg-[#252525] transition duration-150 flex flex-col justify-between h-full"
         >
           <video
@@ -67,9 +70,12 @@ const VideoCard = (props: Props) => {
             </h2>
             <div className="flex gap-x-2 items-center mt-4">
               <Avatar className="w-8 h-8">
-                <AvatarImage src={props.User?.image as string} />
+                <AvatarImage 
+                  src={user?.imageUrl} 
+                  alt={`${props.User?.firstname}'s avatar`}
+                />
                 <AvatarFallback>
-                  <User />
+                  <User className="w-4 h-4" />
                 </AvatarFallback>
               </Avatar>
               <div>
