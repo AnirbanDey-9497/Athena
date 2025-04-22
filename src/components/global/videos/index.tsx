@@ -4,11 +4,15 @@ import { useQueryData } from '@/hooks/useQueryData'
 import React from 'react'
 import { VideosProps } from '@/types/index.type'
 import VideoRecorderDuotone from '@/components/icons/video-recorder-duotone'
+import { cn } from '@/lib/utils'
+import VideoCard from './video-card'
 type Props = {
     folderId: string
     videosKey: string
     workspaceId: string
 }
+
+
 
 const Videos = ({folderId, videosKey, workspaceId}: Props) => {
   
@@ -22,9 +26,28 @@ const Videos = ({folderId, videosKey, workspaceId}: Props) => {
           <div className="flex items-center gap-4">
             <VideoRecorderDuotone />
             <h2 className="text-[#BdBdBd] text-xl">Videos</h2>
+            </div>
+        </div>
+            <section className={cn(
+          videoStatus !== 200
+            ? 'p-5'
+            : 'grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
+        )}>
+             {videoStatus === 200 ? (
+          videos.map((video) => (
+            <VideoCard
+              key={video.id}
+              workspaceId={workspaceId}
+              {...video}
+            />
+          ))
+        ) : (
+          <p className="text-[#BDBDBD]"> No videos in workspace</p>
+        )}
+        
+        </section>
           </div>
-        </div>
-        </div>
+        
   )
 }
 

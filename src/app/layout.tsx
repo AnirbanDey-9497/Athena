@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme";
 import ReactQueryProvider from "@/react-query";
+import { ReduxProvider } from "@/redux/provider";
 
 const manrope = Manrope({subsets: ['latin'] })
 
@@ -27,9 +28,12 @@ export default function RootLayout({
             defaultTheme="dark"
             disableTransitionOnChange
           >
-            <ReactQueryProvider>
-              {children}
-            </ReactQueryProvider>
+            <ReduxProvider>
+              <ReactQueryProvider>
+                {children}
+              </ReactQueryProvider>
+            </ReduxProvider>
+            
           </ThemeProvider>
         </body>
       </html>
