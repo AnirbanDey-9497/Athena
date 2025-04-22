@@ -1,16 +1,16 @@
-
+'use client'
 
 import CreateFolders from "@/components/global/create-folders"
 import CreateWorkspace from "@/components/global/create-workspace"
 import Folders from "@/components/global/folders"
+import Videos from "@/components/global/videos"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import React from "react"
+import { useParams } from "next/navigation"
 
-type Props = {
-    params: {workspaceId: string}
-}
+const Page = () => {
+    const params = useParams()
+    const workspaceId = params.workspaceId as string
 
-const Page = ({params}: Props) => {
     return (
     <div>
         <Tabs defaultValue="videos" className="mt-6">
@@ -35,12 +35,19 @@ const Page = ({params}: Props) => {
                 </TabsList>
                 <div className="flex gap-x-3">
                     <CreateWorkspace />
-                    <CreateFolders workspaceId={params.workspaceId} />
+                    <CreateFolders workspaceId={workspaceId} />
                 </div>
             </div>
             <section className="py-9">
                 <TabsContent value="videos">
-                    <Folders workspaceId={params.workspaceId} />
+                    <div className="space-y-4">
+                        <Folders workspaceId={workspaceId} />
+                        <Videos 
+                            folderId={workspaceId}
+                            videosKey={`videos-${workspaceId}`}
+                            workspaceId={workspaceId}
+                        />
+                    </div>
                 </TabsContent>
             </section>
         </Tabs>
