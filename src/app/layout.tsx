@@ -6,7 +6,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme";
 import ReactQueryProvider from "@/react-query";
 import { ReduxProvider } from "@/redux/provider";
-
+import { Toaster } from "sonner";
 const manrope = Manrope({subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -31,6 +31,7 @@ export default function RootLayout({
             <ReduxProvider>
               <ReactQueryProvider>
                 {children}
+                <Toaster />
               </ReactQueryProvider>
             </ReduxProvider>
             
