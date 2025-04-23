@@ -10,6 +10,7 @@ import { truncateString } from '@/lib/utils'
 import { Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import TabMenu from '../../tabs'
+import AiTools from '../../ai-tools'
 
 type Props = {
     videoId: string
@@ -132,9 +133,11 @@ const VideoPreview = ({ videoId }: Props) => {
                         defaultValue="Ai tools"
                         triggers={['Ai tools', 'Transcript', 'Activity']}
                     >
-                        <div data-tab="Ai tools">AI Tools Content</div>
-                        <div data-tab="Transcript">Transcript Content</div>
-                        <div data-tab="Activity">Activity Content</div>
+                        <AiTools
+                            videoId={videoId}
+                            trial={video.User?.trial!}
+                            plan={video.User?.subscription?.plan!}
+                        />
                     </TabMenu>
                 </div>
             </div>
