@@ -192,7 +192,6 @@ export const searchUsers = async (query: string) => {
             }, 
             select: {
                 id:true,
-
                 subscription: {
                     select: {
                         plan: true,

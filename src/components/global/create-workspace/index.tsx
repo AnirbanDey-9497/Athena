@@ -5,7 +5,7 @@ import { getWorkSpaces } from "@/actions/workspace"
 import React from "react"
 import Modal from "../modal"
 import { Button } from "@/components/ui/button"
-import FolderPlusDuotone from "@/components/icons/folder-plus-duotone"
+import { PlusCircle } from "lucide-react"
 import WorkspaceForm from "@/components/forms/workspace-forms"
 
 type Props = {}
@@ -44,14 +44,12 @@ const CreateWorkspace = (props: Props) => {
                         className="bg-[#1D1D1D] text-[#707070] flex items-center gap-2 py-6 px-4 rounded-2xl"
                         aria-label="Create Workspace"
                     >
-                        <FolderPlusDuotone />
+                        <PlusCircle size={20} />
                         <span>Create Workspace</span>
                     </Button>
-                    
                 }
             >
                 <WorkspaceForm />
-                
             </Modal>
         )
     }

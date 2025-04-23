@@ -22,13 +22,15 @@ export const useMutationData = (
     onSuccess(data) {
       console.log('Mutation success:', data)
       if (onSuccess) onSuccess()
-      return toast(data?.status === 200 ? 'Success' : 'Error', {
-        description: data?.data ? 'Folder created' : 'Failed to create folder',
-      })
+      if (data?.status === 201 || data?.status === 200) {
+        toast.success(data?.data || 'Operation successful')
+      } else {
+        toast.error(data?.data || 'Operation failed')
+      }
     },
-    onError(error) {
+    onError(error: Error) {
       console.error('Mutation error:', error)
-      toast.error('Something went wrong')
+      toast.error(error.message || 'Something went wrong')
     },
     onSettled: async () => {
       console.log('Mutation settled, invalidating query:', queryKey)

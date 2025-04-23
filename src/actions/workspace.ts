@@ -192,48 +192,68 @@ export const getWorkSpaces = async () => {
 export const createWorkspace = async (name: string) => {
     try {
       const user = await currentUser()
-      if (!user) return { status: 404 }
+      if (!user) {
+        console.log('No user found')
+        return { status: 404, data: 'User not found' }
+      }
+
+      console.log('Current user details:', {
+        id: user.id,
+        email: user.emailAddresses[0].emailAddress,
+        firstName: user.firstName,
+        lastName: user.lastName
+      })
+
       const authorized = await client.user.findUnique({
         where: {
-          clerkid: user.id,
+          clerkId: user.id,
         },
-        select: {
-          subscription: {
-            select: {
-              plan: true,
+        include: {
+          subscription: true
+        }
+      })
+
+      console.log('Database user record:', authorized)
+      
+      if (!authorized?.subscription) {
+        console.log('No subscription found for user:', user.id)
+        return { status: 401, data: 'No subscription found' }
+      }
+
+      if (authorized.subscription.plan !== 'PRO') {
+        console.log('User subscription is not PRO:', authorized.subscription.plan)
+        return { status: 401, data: 'You need a PRO subscription to create workspaces' }
+      }
+
+      console.log('Creating workspace for PRO user')
+      const workspace = await client.user.update({
+        where: {
+          clerkId: user.id,
+        },
+        data: {
+          workspace: {
+            create: {
+              name,
+              type: 'PUBLIC',
             },
           },
         },
       })
-  
-      if (authorized?.subscription?.plan === 'PRO') {
-        const workspace = await client.user.update({
-          where: {
-            clerkid: user.id,
-          },
-          data: {
-            workspace: {
-              create: {
-                name,
-                type: 'PUBLIC',
-              },
-            },
-          },
-        })
-        if (workspace) {
-          return { status: 201, data: 'Workspace Created' }
-        }
+
+      if (workspace) {
+        console.log('Workspace created successfully')
+        return { status: 201, data: 'Workspace Created' }
       }
-      return {
-        status: 401,
-        data: 'You are not authorized to create a workspace.',
-      }
+
+      console.log('Failed to create workspace')
+      return { status: 400, data: 'Failed to create workspace' }
     } catch (error) {
-      return { status: 400 }
+      console.error('Error creating workspace:', error)
+      return { status: 400, data: 'Failed to create workspace' }
     }
-  }
+}
   
-  export const renameFolders = async (folderId: string, name: string) => {
+export const renameFolders = async (folderId: string, name: string) => {
     try {
         const folder = await client.folder.update({
             where: {
