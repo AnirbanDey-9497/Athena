@@ -20,7 +20,8 @@ import GlobalCard from '../global-card'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import InfoBar from '../info-bar'
-
+import { useDispatch } from 'react-redux'
+import { WORKSPACES } from '@/redux/slices/workspaces'
 interface WorkspaceResponse {
     status: number;
     data: {
@@ -56,6 +57,7 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
     const router = useRouter()
     const pathname = usePathname()
     const { isLoaded, user } = useUser()
+    const dispatch = useDispatch()
 
     const {data: response, isFetched} = useQueryData(['user-workspaces'], getWorkSpaces)
     const menuItems = MENU_ITEMS(activeWorkspaceId)
@@ -79,6 +81,10 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
     }
 
     const currentWorkspace = workspaceInfo?.workspace?.find((ws) => ws.id === activeWorkspaceId)
+
+    if (isFetched && workspaceInfo) {
+        dispatch(WORKSPACES({ workspaces: workspaceInfo.workspace }))
+    }
 
     const SidebarSection = (
         <div className="bg-[#111111] flex-none relative p-4 h-full w-[250px] flex flex-col gap-4">
