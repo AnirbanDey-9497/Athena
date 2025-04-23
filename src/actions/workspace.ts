@@ -363,3 +363,56 @@ export const getFolderInfo = async (folderId: string) => {
       return { status: 500, data: 'Oops! something went wrong' }
     }
   }
+
+
+  export const getPreviewVideo = async (videoId: string) => {
+    try {
+        const user = await currentUser()
+        if (!user) {
+            console.log('No user found')
+            return { status: 404 }
+        }
+        console.log('User found:', user.id)
+        const video = await client.video.findUnique({
+            where: {
+                id: videoId,
+            },
+            select: {
+                title: true,
+                createdAt: true,
+                source: true,
+                description: true,
+                processing: true,
+                views: true,
+                summery: true,
+                User: {
+                    select: {
+                        firstname: true,
+                        lastname: true,
+                        image: true,
+                        clerkId: true,
+                        trial: true,
+                        subscription: {
+                            select: {
+                                plan: true,
+                            },
+                        },
+                    },
+                },
+            },
+        })
+        console.log('Video query result:', video)
+        if (video) {
+            return {
+                status: 200,
+                data: video,
+                author: user.id === video.User?.clerkId ? true : false,
+            }
+        }
+
+        return { status: 404 }
+    } catch (error) {
+        console.error('Error in getPreviewVideo:', error)
+        return { status: 400 }
+    }
+}
