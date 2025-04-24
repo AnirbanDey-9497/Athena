@@ -23,11 +23,11 @@ export const useMutationData = (
       console.log('Mutation success:', data)
       if (onSuccess) onSuccess()
       if (data?.status === 201 || data?.status === 200) {
-        toast.success(data?.data || 'Operation successful', {
+        toast.success('Operation successful', {
           description: 'Success'
         })
       } else {
-        toast.error(data?.data || 'Operation failed', {
+        toast.error('Operation failed', {
           description: 'Error'
         })
       }

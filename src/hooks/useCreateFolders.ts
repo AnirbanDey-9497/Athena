@@ -10,9 +10,6 @@ export const useCreateFolders = (workspaceId: string) => {
       console.log('createFolder mutation triggered')
       const response = await createFolder(workspaceId)
       console.log('createFolder response:', response)
-      if (response.status !== 200) {
-        throw new Error('Failed to create folder')
-      }
       return response
     },
     ['workspace-folders', workspaceId]
@@ -20,7 +17,7 @@ export const useCreateFolders = (workspaceId: string) => {
 
   const onCreateNewFolder = () => {
     console.log('onCreateNewFolder called')
-    mutate({})
+    mutate(null)
   }
 
   return { onCreateNewFolder }

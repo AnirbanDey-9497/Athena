@@ -77,10 +77,36 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
     }
 
     const onChangeActiveWorkspace = (value: string) => {
+        console.log('[Sidebar] Changing workspace:', {
+            from: activeWorkspaceId,
+            to: value,
+            currentPath: pathname
+        })
         router.push(`/dashboard/${value}`)
     }
 
     const currentWorkspace = workspaceInfo?.workspace?.find((ws) => ws.id === activeWorkspaceId)
+    
+    // Get current page title based on pathname
+    const getCurrentPageTitle = () => {
+        const currentMenuItem = menuItems.find(item => pathname === item.href)
+        if (currentMenuItem) {
+            return currentMenuItem.title
+        }
+        // Default to workspace name if no matching menu item
+        return currentWorkspace?.name || ''
+    }
+
+    console.log('[Sidebar] Current state:', {
+        activeWorkspaceId,
+        pathname,
+        currentWorkspace: currentWorkspace?.name,
+        currentPageTitle: getCurrentPageTitle(),
+        menuItems: menuItems.map(item => ({
+            title: item.title,
+            href: item.href
+        }))
+    })
 
     if (isFetched && workspaceInfo) {
         dispatch(WORKSPACES({ workspaces: workspaceInfo.workspace }))
@@ -138,19 +164,26 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
                     <p className="text-neutral-500 font-medium text-xs">Menu</p>
                     <nav className="w-full">
                         <ul className="space-y-1">
-                            {menuItems.map((item) => (
-                                <SidebarItem 
-                                    key={item.title}
-                                    href={item.href}
-                                    icon={item.icon}
-                                    selected={pathname === item.href}    
-                                    title={item.title}
-                                    notifications={
-                                        (item.title === 'Notifications' &&
-                                            notifications?._count?.notification) || 0
-                                    }
-                                />
-                            ))}
+                            {menuItems.map((item) => {
+                                console.log('[Sidebar] Rendering menu item:', {
+                                    title: item.title,
+                                    href: item.href,
+                                    isSelected: pathname === item.href
+                                })
+                                return (
+                                    <SidebarItem 
+                                        key={item.title}
+                                        href={item.href}
+                                        icon={item.icon}
+                                        selected={pathname === item.href}    
+                                        title={item.title}
+                                        notifications={
+                                            (item.title === 'Notifications' &&
+                                                notifications?._count?.notification) || 0
+                                        }
+                                    />
+                                )
+                            })}
                         </ul>
                     </nav>
                 </div>

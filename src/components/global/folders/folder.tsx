@@ -28,7 +28,12 @@ const Folder = ({ id, name, optimistic, count, workspaceId }: Props) => {
 
     const { mutate, isPending } = useMutationData(
         ['rename-folders'],
-        (data: { name: string }) => renameFolders(id, data.name),
+        async (data: { name: string }) => {
+            console.log('renameFolders mutation triggered')
+            const response = await renameFolders(id, data.name)
+            console.log('renameFolders response:', response)
+            return response
+        },
         ['workspace-folders', workspaceId],
         Renamed
     )

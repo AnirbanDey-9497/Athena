@@ -9,6 +9,9 @@ import { getWorkspaceFolders } from '@/actions/workspace'
 import { useMutationDataState } from '@/hooks/useMutationData'
 import { useDispatch } from 'react-redux'
 import { FOLDERS } from '@/redux/slices/folders'
+import { usePathname, useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+
 type Props = {
     workspaceId: string
 }
@@ -29,8 +32,14 @@ export type FolderProps = {
 
 const Folders = ({workspaceId}: Props) => {
     const dispatch = useDispatch()
+    const router = useRouter()
+    const pathname = usePathname()
     const {data: queryData, isFetched} = useQueryData(['workspace-folders', workspaceId], () => getWorkspaceFolders(workspaceId))
     const {latestVariables} = useMutationDataState(['create-folder'])
+
+    const handleViewAll = () => {
+        router.push(`${pathname}/folders`)
+    }
 
     if (!queryData) {
         return (
@@ -40,10 +49,14 @@ const Folders = ({workspaceId}: Props) => {
                         <FolderDuotone />
                         <h2 className="text-[#BDBDBD] text-xl">Folders</h2>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <Button 
+                        variant="ghost" 
+                        className="flex items-center gap-2 hover:bg-transparent"
+                        onClick={handleViewAll}
+                    >
                         <p className="text-[#BDBDBD]">View All</p>
                         <ArrowRight color='#707070' />
-                    </div>
+                    </Button>
                 </div>
                 <section className="flex items-center justify-center">
                     <p className='text-neutral-300'>Loading folders...</p>
@@ -65,10 +78,14 @@ const Folders = ({workspaceId}: Props) => {
                     <FolderDuotone />
                     <h2 className="text-[#BDBDBD] text-xl">Folders</h2>
                 </div>
-                <div className="flex items-center gap-2">
+                <Button 
+                    variant="ghost" 
+                    className="flex items-center gap-2 hover:bg-transparent"
+                    onClick={handleViewAll}
+                >
                     <p className="text-[#BDBDBD]">View All</p>
                     <ArrowRight color='#707070' />
-                </div>
+                </Button>
             </div>
             <section className={cn(
                 status !== 200 && 'justify-center',
