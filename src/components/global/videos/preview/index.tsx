@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import TabMenu from '../../tabs'
 import AiTools from '../../ai-tools'
 import VideoTranscript from '../../video-transcript'
+import Activities from '@/components/global/activities'
 
 type Props = {
     videoId: string
@@ -140,10 +141,10 @@ const VideoPreview = ({ videoId }: Props) => {
                             plan={video.User?.subscription?.plan!}
                         />
                         <VideoTranscript transcript={video.summery!} />
-                            {/* <Activities
+                            <Activities
                             author={video.User?.firstname as string}
                             videoId={videoId}
-                        /> */}
+                        />
                     </TabMenu>
                 </div>
             </div>

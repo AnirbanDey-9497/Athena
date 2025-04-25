@@ -17,6 +17,5 @@ export const MENU_ITEMS = (workplaceId: string ) : {
         icon: <Bell /> 
     },
     {title: 'Billing', href: `/dashboard/${workplaceId}/billing`, icon: <CreditCard /> },
-    {title: 'Settings', href: `/dashboard/${workplaceId}/home`, icon: <Settings /> },
-   
+    {title: 'Settings', href: `/dashboard/${workplaceId}/settings`, icon: <Settings /> },
 ]

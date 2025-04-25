@@ -7,12 +7,12 @@ import Sidebar from "@/components/global/sidebar"
 import GlobalHeader from "@/components/global/global-header"
 
 type Props = {
-    params: { workspaceId: string }
+    params: Promise<{ workspaceId: string }>
     children: React.ReactNode
 }
 
 const Layout = async ({ params, children }: Props) => {
-    const workspaceId = params.workspaceId
+    const { workspaceId } = await params
     const auth = await onAuthenticateUser()
 
     // Check if user is authenticated and has a workspace
