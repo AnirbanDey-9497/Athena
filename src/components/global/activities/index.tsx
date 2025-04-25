@@ -18,6 +18,9 @@ const Activities = ({ author, videoId }: Props) => {
     () => getVideoComments(videoId)
   )
 
+  // For debugging
+  console.log('Comments data:', commentsData)
+
   return (
     <TabsContent
       value="Activity"
@@ -38,21 +41,26 @@ const Activities = ({ author, videoId }: Props) => {
         </div>
       ) : (
         <>
-          {(commentsData as VideoCommentProps).data.map((comment) => (
-            <CommentCard
-              key={comment.id}
-              comment={comment.comment}
-              author={{
-                image: comment.User?.image || '',
-                firstname: comment.User?.firstname || '',
-                lastname: comment.User?.lastname || '',
-              }}
-              videoId={videoId}
-              reply={comment.reply}
-              commentId={comment.id}
-              createdAt={comment.createdAt}
-            />
-          ))}
+          {(commentsData as VideoCommentProps).data.map((comment) => {
+            // For debugging
+            console.log('Comment user:', comment.User)
+            
+            return (
+              <CommentCard
+                key={comment.id}
+                comment={comment.comment}
+                author={{
+                  image: comment.User?.image || '',
+                  firstname: comment.User?.firstname || '',
+                  lastname: comment.User?.lastname || '',
+                }}
+                videoId={videoId}
+                reply={comment.reply}
+                commentId={comment.id}
+                createdAt={comment.createdAt}
+              />
+            )
+          })}
           {(commentsData as VideoCommentProps).data.length === 0 && (
             <div className="text-white/50 text-center py-4">
               No comments yet. Be the first to comment!

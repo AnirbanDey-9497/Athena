@@ -7,7 +7,7 @@ import { createCommentAndReply, getUserProfile } from '@/actions/user'
 export const useVideoComment = (videoId: string, commentId?: string) => {
   const { data: profileData } = useQueryData(['user-profile'], getUserProfile)
   
-  // Always create the mutation, but only enable it when we have valid profile data
+  // Mutation for creating/replying to comments
   const { isPending, mutate } = useMutationData(
     ['new-comment'],
     async (data: { comment: string }) => {
@@ -19,7 +19,7 @@ export const useVideoComment = (videoId: string, commentId?: string) => {
     'video-comments'
   )
 
-  // Always create the form with the real mutate function
+  // Form handling
   const { register, onFormSubmit, errors, reset } = useZodForm(
     createCommentSchema,
     mutate

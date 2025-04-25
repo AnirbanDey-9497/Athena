@@ -2,6 +2,7 @@
 
 import { client } from "@/lib/prisma"
 import { auth, currentUser } from "@clerk/nextjs/server"
+import { Prisma } from '@prisma/client'
 
 export const onAuthenticateUser = async () => {
     try {
@@ -345,8 +346,47 @@ export const getPaymentInfo = async () => {
     }
   }
   
+  type CommentWithUser = {
+    id: string;
+    comment: string;
+    videoId: string | null;
+    commentId: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: string | null;
+    User: {
+      id: string;
+      firstname: string | null;
+      lastname: string | null;
+      clerkId: string;
+      image: string | null;
+    } | null;
+    reply: Array<{
+      id: string;
+      comment: string;
+      videoId: string | null;
+      commentId: string;
+      createdAt: Date;
+      updatedAt: Date;
+      userId: string | null;
+      User: {
+        id: string;
+        firstname: string | null;
+        lastname: string | null;
+        clerkId: string;
+        image: string | null;
+      } | null;
+    }>;
+  }
+
+  type ReactionCount = {
+    count: number;
+    hasReacted: boolean;
+  }
+
   export const getVideoComments = async (Id: string) => {
     try {
+      const currentClerkUser = await currentUser()
       const comments = await client.comment.findMany({
         where: {
           OR: [{ videoId: Id }, { commentId: Id }],
@@ -355,15 +395,48 @@ export const getPaymentInfo = async () => {
         include: {
           reply: {
             include: {
-              User: true,
+              User: {
+                select: {
+                  id: true,
+                  firstname: true,
+                  lastname: true,
+                  clerkId: true,
+                  image: true
+                }
+              }
             },
           },
-          User: true,
+          User: {
+            select: {
+              id: true,
+              firstname: true,
+              lastname: true,
+              clerkId: true,
+              image: true
+            }
+          }
         },
       })
   
-      return { status: 200, data: comments }
+      // Transform the comments to include the current user's image
+      const transformedComments = comments.map((comment: CommentWithUser) => ({
+        ...comment,
+        User: comment.User ? {
+          ...comment.User,
+          image: comment.User.clerkId === currentClerkUser?.id ? currentClerkUser?.imageUrl : comment.User.image
+        } : null,
+        reply: comment.reply.map((reply: CommentWithUser['reply'][0]) => ({
+          ...reply,
+          User: reply.User ? {
+            ...reply.User,
+            image: reply.User.clerkId === currentClerkUser?.id ? currentClerkUser?.imageUrl : reply.User.image
+          } : null
+        }))
+      }))
+  
+      return { status: 200, data: transformedComments }
     } catch (error) {
+      console.error('Error in getVideoComments:', error)
       return { status: 400 }
     }
   }
