@@ -16,9 +16,10 @@ type Props = {
     placeholder: string
     errors: FieldErrors<FieldValues>
     lines?: number
+    disabled?: boolean
 }
 
-const FormGenerator = ({type, inputType, options, label, register, name, placeholder, errors, lines}: Props) => {
+const FormGenerator = ({type, inputType, options, label, register, name, placeholder, errors, lines, disabled}: Props) => {
     switch(inputType) {
         case 'input':
             return (
@@ -32,6 +33,7 @@ const FormGenerator = ({type, inputType, options, label, register, name, placeho
             type={type}
             placeholder={placeholder}
             className="bg-transparent border-themeGray text-themeTextGray"
+            disabled={disabled}
             {...register(name)}
           />
           <ErrorMessage
@@ -56,6 +58,7 @@ const FormGenerator = ({type, inputType, options, label, register, name, placeho
           <select
             id={`select-${label}`}
             className="w-full bg-transparent border-[1px] p-3 rounded-lg"
+            disabled={disabled}
             {...register(name)}
           >
             {options?.length &&
@@ -93,6 +96,7 @@ const FormGenerator = ({type, inputType, options, label, register, name, placeho
             id={`input-${label}`}
             placeholder={placeholder}
             rows={lines}
+            disabled={disabled}
             {...register(name)}
           />
           <ErrorMessage

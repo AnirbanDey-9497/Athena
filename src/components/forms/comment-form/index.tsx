@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { useVideoComment } from '@/hooks/useVideo'
 import { Send } from 'lucide-react'
 import React from 'react'
+import { useAuth } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
 
 type Props = {
   videoId: string
@@ -18,25 +20,37 @@ const CommentForm = ({ author, videoId, close, commentId }: Props) => {
     videoId,
     commentId
   )
+  const { isSignedIn } = useAuth()
+  const router = useRouter()
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!isSignedIn) {
+      router.push('/auth/sign-in')
+      return
+    }
+    onFormSubmit(e)
+  }
 
   return (
     <form
       className="relative w-full"
-      onSubmit={onFormSubmit}
+      onSubmit={handleSubmit}
     >
       <FormGenerator
         register={register}
         errors={errors}
-        placeholder={`Respond to ${author}...`}
+        placeholder={isSignedIn ? `Respond to ${author}...` : 'Sign in to comment...'}
         name="comment"
         inputType="input"
         lines={8}
         type="text"
+        disabled={!isSignedIn}
       />
       <Button
         className="p-0 bg-transparent absolute top-[1px] right-3 hover:bg-transparent"
         type="submit"
-        disabled={isPending}
+        disabled={isPending || !isSignedIn}
       >
         <Loader state={isPending}>
           <Send
