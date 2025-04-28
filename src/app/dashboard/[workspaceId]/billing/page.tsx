@@ -9,6 +9,7 @@ import { Download, Plus, CreditCard } from 'lucide-react'
 import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { StaticImageData } from 'next/image'
+import { useSubscription } from '@/hooks/useSubscription'
 
 interface PaymentMethod {
     id: string;
@@ -42,6 +43,7 @@ interface PaymentInfo {
 const BillingPage = () => {
     const { data: paymentInfo, isPending } = useQueryData(['payment-info'], getPaymentInfo)
     const typedPaymentInfo = paymentInfo as PaymentInfo | undefined
+    const { onSubscribe, isProcessing } = useSubscription()
 
     const getPaymentMethodIcon = (type: string): string => {
         switch (type) {
@@ -109,12 +111,10 @@ const BillingPage = () => {
                             <Button 
                                 variant="outline" 
                                 className="border-emerald-800 hover:bg-emerald-900/20 text-emerald-500 hover:text-emerald-400"
-                                onClick={() => {
-                                    // TODO: Implement upgrade to PRO
-                                    console.log('Upgrade to PRO')
-                                }}
+                                onClick={onSubscribe}
+                                disabled={isProcessing}
                             >
-                                Upgrade to PRO
+                                {isProcessing ? 'Processing...' : 'Upgrade to PRO'}
                             </Button>
                         )}
                     </div>

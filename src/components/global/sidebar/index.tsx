@@ -22,6 +22,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import InfoBar from '../info-bar'
 import { useDispatch } from 'react-redux'
 import { WORKSPACES } from '@/redux/slices/workspaces'
+import PaymentButton from '../payment-button'
 interface WorkspaceResponse {
     status: number;
     data: {
@@ -241,18 +242,14 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
                 </div>
 
                 <Separator className="bg-neutral-800" />
-                
+
                 {workspaceInfo?.subscription?.plan === 'FREE' && (
                     <div className="rounded-lg bg-neutral-900 p-4 space-y-2">
                         <h3 className="text-sm font-medium">Upgrade to Pro</h3>
                         <p className="text-xs text-neutral-500">
                             Unlock AI features like transcription, AI summary, and more.
                         </p>
-                        <Button variant="default" className="w-full mt-2 bg-white text-black hover:bg-neutral-200 h-8 text-xs rounded-md">
-                            <Loader color='#0000' state={false}>
-                                Upgrade
-                            </Loader>
-                        </Button>
+                        <PaymentButton />
                     </div>
                 )}
             </div>
@@ -260,7 +257,7 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
     )
 
     return (
-        <div className="h-full">
+        <div className="flex flex-col h-full">
             <InfoBar />
             <div className="md:hidden fixed my-4">
                 <Sheet>

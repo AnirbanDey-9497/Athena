@@ -19,6 +19,8 @@ type Props = {
 const GlobalHeader = ({ workspace }: Props) => {
     const pathname = usePathname()
     const menuItems = MENU_ITEMS(workspace.id)
+    // Extract the path after /dashboard/{workspace.id}
+    const pathName = pathname.split(`/dashboard/${workspace.id}`)[1] || ''
 
     const getPageTitle = () => {
         // Find matching menu item
@@ -49,10 +51,14 @@ const GlobalHeader = ({ workspace }: Props) => {
     return (
         <article className="flex flex-col gap-2">
             <span className="text-[#707070] text-xs">
-                {workspace.type === 'PERSONAL' ? 'PERSONAL' : 'PUBLIC'}
+                {pathName.includes('video') ? '' : workspace.type.toLocaleUpperCase()}
             </span>
             <h1 className="text-4xl font-bold text-white">
-                {getPageTitle()}
+                {pathName && !pathName.includes('folder') && !pathName.includes('video')
+                    ? pathName.charAt(1).toUpperCase() + pathName.slice(2).toLowerCase()
+                    : pathName.includes('video')
+                    ? ''
+                    : 'My Library'}
             </h1>
         </article>
     )
