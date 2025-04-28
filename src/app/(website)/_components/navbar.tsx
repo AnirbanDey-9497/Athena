@@ -13,12 +13,12 @@ const LandingPageNavBar = (props: Props) => {
                 <Menu className="w-8 h-8" />
                 <Image 
                 alt="logo"
-                src="/athena-logo.png"
+                src="/rekord.png"
                 width={40}
                 height={40}
                 className="rounded-lg"
                 />
-                Athena
+                Rekord
             </div>
             <div className="hidden gap-x-10 items-center lg:flex">
                 <Link

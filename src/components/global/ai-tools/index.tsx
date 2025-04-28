@@ -72,7 +72,7 @@ const AiTools = ({ plan, trial, videoId }: Props) => {
         </div>
         <div className=" border-[1px] rounded-xl p-4 gap-4 flex flex-col bg-[#1b0f1b7f] ">
           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold text-[#a22fe0]"> Athena Ai</h2>
+            <h2 className="text-2xl font-bold text-[#a22fe0]"> Rekord Ai</h2>
             <StarsIcon
               color="#a22fe0"
               fill="#a22fe0"
