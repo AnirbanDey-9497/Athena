@@ -115,8 +115,8 @@ const Sidebar = ({activeWorkspaceId}: Props) => {
     const SidebarSection = (
         <div className="bg-[#111111] flex-none relative p-4 h-full w-[250px] flex flex-col gap-4">
             <div className="bg-[#111111] p-4 flex gap-2 items-center mb-4 absolute top-0 left-0 right-0 z-10">
-                <Image src="/evo-logo.png" height={32} width={32} alt="logo" className="rounded-lg"/>
-                <p className="text-xl font-medium">Evo</p>
+                <Image src="/athena-logo.png" height={32} width={32} alt="logo" className="rounded-lg"/>
+                <p className="text-xl font-medium">Athena</p>
             </div>
             
             <div className="mt-[72px] w-full flex flex-col gap-6">

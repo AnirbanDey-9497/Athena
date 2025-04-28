@@ -25,31 +25,45 @@ interface NotificationResponse {
 }
 
 const Notifications = () => {
-  const { data: response } = useQueryData(['notifications'], getNotifications)
-  const notificationData = response as NotificationResponse | undefined
+  const { data: notifications } = useQueryData(
+    ['user-notifications'],
+    getNotifications
+  )
 
-  // Check for no notifications
-  if (!notificationData || 
-      notificationData.status !== 200 || 
-      !notificationData.data?.notification || 
-      notificationData.data.notification.length === 0) {
+  // Defensive check before destructuring
+  if (!notifications || typeof notifications !== 'object' || !('data' in notifications) || !('status' in notifications)) {
     return (
       <div className="flex justify-center items-center h-full w-full">
-        <p className="text-neutral-500">No notifications</p>
+        <p>No Notification</p>
       </div>
     )
   }
 
-  // Sort notifications by date in descending order
-  const sortedNotifications = [...notificationData.data.notification].sort((a, b) => {
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  })
+  const { data: notification, status } = notifications as {
+    status: number
+    data: {
+      notification: {
+        id: string
+        userId: string | null
+        content: string
+        createdAt?: string
+      }[]
+    }
+  }
+
+  if (status !== 200 || !notification || !notification.notification) {
+    return (
+      <div className="flex justify-center items-center h-full w-full">
+        <p>No Notification</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="flex flex-col gap-4">
-      {sortedNotifications.map((notification) => (
+    <div className="flex flex-col">
+      {notification.notification.map((n) => (
         <div
-          key={notification.id}
+          key={n.id}
           className="border-2 flex gap-x-3 items-center rounded-lg p-3"
         >
           <Avatar>
@@ -57,10 +71,12 @@ const Notifications = () => {
               <User />
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col flex-1">
-            <p>{notification.content}</p>
-            <p className="text-sm text-neutral-500 mt-1">
-              {format(new Date(notification.createdAt), 'PPp')}
+          <div>
+            <p>{n.content}</p>
+            <p className="text-xs text-gray-400">
+              {n.createdAt && !isNaN(new Date(n.createdAt).getTime())
+                ? format(new Date(n.createdAt), 'PPp')
+                : 'Unknown date'}
             </p>
           </div>
         </div>

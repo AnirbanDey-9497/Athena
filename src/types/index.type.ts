@@ -82,6 +82,27 @@ export type VideosProps = {
     author: boolean
   }
 
+  export type UserProps = {
+    id: string
+    email: string
+    firstname: string
+    lastname: string
+    clerkId: string
+    image: string
+  }
+
+  export type CommentProps = {
+    id: string
+    comment: string
+    User: {
+      id: string
+      firstname: string
+      lastname: string
+      clerkId: string
+      image: string
+    }
+  }
+
   export type CommentRepliesProps = {
     id: string
     comment: string
@@ -95,7 +116,7 @@ export type VideosProps = {
       firstname: string | null
       lastname: string | null
       createdAt: Date
-      clerkid: string
+      clerkId: string
       image: string | null
       trial: boolean
       firstView: boolean
@@ -110,7 +131,7 @@ export type VideosProps = {
         firstname: string | null
         lastname: string | null
         createdAt: Date
-        clerkid: string
+        clerkId: string
         image: string | null
         trial: boolean
         firstView: boolean

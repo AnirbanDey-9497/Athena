@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Loader from '../loader'
+import { inviteMembers } from '@/actions/user'
 type Props = {
     workspaceId: string
 }
@@ -17,12 +18,11 @@ const Search = ({workspaceId}: Props) => {
    
    
 
-//WIP: Wired to invite member
-//WIP: Invite Button in UI
-// const {mutate, isPending} = useMutationData(['invite-member'], 
-//     (data: {recieverId: string; email: string })=> {
-
-//     })
+// WIP: Wired to invite member
+// WIP: Invite Button in UI
+const {mutate, isPending} = useMutationData(['invite-member'], 
+    (data: {recieverId: string; email: string })=> inviteMembers(workspaceId, data.recieverId, data.email)
+)
 
 return (
 <div className="flex flex-col gap-y-5">
@@ -53,8 +53,8 @@ return (
                         <p className='lowercase text-xs bg-white px-2 rounded-lg text-[#1e1e1e]'>{user.subscription?.plan}</p>
                     </div>
                     <div className="flex-1 flex justify-end items-center">
-                        <Button onClick={()=> {}} variant= {"default"} className="w-5/12 font-bold">
-                            <Loader state={false} color="#000">Invite</Loader>
+                        <Button onClick={()=> mutate({recieverId: user.id, email: user.email})} variant= {"default"} className="w-5/12 font-bold">
+                            <Loader state={isPending} color="#000">Invite</Loader>
                         </Button>
                     </div>
                 </div>

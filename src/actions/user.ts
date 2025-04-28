@@ -3,6 +3,32 @@
 import { client } from "@/lib/prisma"
 import { auth, currentUser } from "@clerk/nextjs/server"
 import { Prisma } from '@prisma/client'
+import nodemailer from 'nodemailer'
+
+export const sendEmail = async (
+    to: string,
+    subject: string,
+    text: string,
+    html?: string
+  ) => {
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.MAILER_EMAIL,
+        pass: process.env.MAILER_PASSWORD,
+      },
+    })
+  
+    const mailOptions = {
+      to,
+      subject,
+      text,
+      html,
+    }
+    return { transporter, mailOptions }
+  }
 
 export const onAuthenticateUser = async () => {
     try {
@@ -438,6 +464,87 @@ export const getPaymentInfo = async () => {
     } catch (error) {
       console.error('Error in getVideoComments:', error)
       return { status: 400 }
+    }
+  }
+  
+
+  export const inviteMembers = async (
+    workspaceId: string,
+    recieverId: string,
+    email: string
+  ) => {
+    try {
+      const user = await currentUser()
+      if (!user) return { status: 404 }
+      const senderInfo = await client.user.findUnique({
+        where: {
+          clerkId: user.id,
+        },
+        select: {
+          id: true,
+          firstname: true,
+          lastname: true,
+        },
+      })
+      if (senderInfo?.id) {
+        const workspace = await client.workSpace.findUnique({
+          where: {
+            id: workspaceId,
+          },
+          select: {
+            name: true,
+          },
+        })
+        if (workspace) {
+          const invitation = await client.invite.create({
+            data: {
+              senderId: senderInfo.id,
+              recieverId,
+              workSpaceId: workspaceId,
+              content: `You are invited to join ${workspace.name} Workspace, click accept to confirm`,
+            },
+            select: {
+              id: true,
+            },
+          })
+  
+          await client.user.update({
+            where: {
+              clerkId: user.id,
+            },
+            data: {
+              notification: {
+                create: {
+                  content: `${user.firstName} ${user.lastName} invited ${senderInfo.firstname} into ${workspace.name}`,
+                },
+              },
+            },
+          })
+          if (invitation) {
+            const { transporter, mailOptions } = await sendEmail(
+              email,
+              'You got an invitation',
+              'You are invited to join ${workspace.name} Workspace, click accept to confirm',
+              `<a href="${process.env.NEXT_PUBLIC_HOST_URL}/invite/${invitation.id}" style="background-color: #000; padding: 5px 10px; border-radius: 10px;">Accept Invite</a>`
+            )
+  
+            transporter.sendMail(mailOptions, (error, info) => {
+              if (error) {
+                console.log('🔴', error.message)
+              } else {
+                console.log('✅ Email send')
+              }
+            })
+            return { status: 200, data: 'Invite sent' }
+          }
+          return { status: 400, data: 'invitation failed' }
+        }
+        return { status: 404, data: 'workspace not found' }
+      }
+      return { status: 404, data: 'recipient not found' }
+    } catch (error) {
+      console.log(error)
+      return { status: 400, data: 'Oops! something went wrong' }
     }
   }
   

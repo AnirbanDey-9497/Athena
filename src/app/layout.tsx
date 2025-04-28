@@ -10,7 +10,7 @@ import { Toaster } from "sonner";
 const manrope = Manrope({subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Evo",
+  title: "Athena",
   description: "Share AI powered videos with your friends",
 };
 

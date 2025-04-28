@@ -1,11 +1,9 @@
 'use client'
 import CommentForm from '@/components/forms/comment-form'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { CommentRepliesProps } from '@/types/index.type'
-import { MessageCircle, User } from 'lucide-react'
+import { User } from 'lucide-react'
 import React, { useState } from 'react'
 
 type Props = {
@@ -18,6 +16,25 @@ type Props = {
   createdAt: Date
 }
 
+const formatTimeAgo = (date: Date) => {
+  const now = new Date()
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+  const diffInMinutes = Math.floor(diffInSeconds / 60)
+  const diffInHours = Math.floor(diffInMinutes / 60)
+  const diffInDays = Math.floor(diffInHours / 24)
+
+  if (diffInDays > 0) {
+    return diffInDays === 1 ? '1 day ago' : `${diffInDays} days ago`
+  }
+  if (diffInHours > 0) {
+    return diffInHours === 1 ? '1 hour ago' : `${diffInHours} hours ago`
+  }
+  if (diffInMinutes > 0) {
+    return diffInMinutes === 1 ? '1 minute ago' : `${diffInMinutes} minutes ago`
+  }
+  return 'Just now'
+}
+
 const CommentCard = ({
   author,
   comment,
@@ -28,23 +45,18 @@ const CommentCard = ({
   createdAt,
 }: Props) => {
   const [onReply, setOnReply] = useState<boolean>(false)
-  const daysAgo = Math.floor(
-    (new Date().getTime() - createdAt.getTime()) / (24 * 60 * 60 * 1000)
-  )
-
+  const timeAgo = formatTimeAgo(new Date(createdAt))
   const initials = `${author.firstname?.[0] || ''}${author.lastname?.[0] || ''}`
 
+  // Sort replies by most recent first
+  const sortedReplies = [...reply].sort((a, b) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )
+
   return (
-    <Card
-      className={cn(
-        isReply
-          ? 'bg-[#1D1D1D] pl-10 border-none shadow-none'
-          : 'border-[1px] bg-[#1D1D1D] p-5 shadow-none',
-        'relative group'
-      )}
-    >
-      <div className="flex gap-x-2 items-start">
-        <Avatar>
+    <div className={cn("flex flex-col gap-3", isReply && "ml-12")}>
+      <div className="flex gap-x-3">
+        <Avatar className="h-8 w-8 rounded-full">
           <AvatarImage
             src={author.image}
             alt={`${author.firstname} ${author.lastname}`}
@@ -53,35 +65,35 @@ const CommentCard = ({
             {initials || <User className="h-4 w-4" />}
           </AvatarFallback>
         </Avatar>
+        
         <div className="flex-1">
-          <div className="flex items-center text-sm">
-            <span className="capitalize text-[#BDBDBD]">
+          <div className="flex items-center gap-2">
+            <span className="text-[13px] font-medium">
               {author.firstname} {author.lastname}
             </span>
-            <span className="text-[#707070] text-xs mx-2">•</span>
-            <span className="text-[#707070] text-xs">
-              {daysAgo === 0 ? 'Today' : `${daysAgo}d ago`}
-            </span>
+            <span className="text-xs text-[#AAAAAA]">{timeAgo}</span>
           </div>
-          <p className="text-[#BDBDBD] mt-2 break-words">{comment}</p>
           
-          <div className="flex items-center gap-3 mt-3">
+          <p className="text-[13px] mt-1">{comment}</p>
+          
+          <div className="flex flex-col mt-1">
+            {!isReply && reply.length > 0 && (
+              <span className="text-[13px] text-[#3EA6FF] mb-1">
+                {reply.length} {reply.length === 1 ? 'reply' : 'replies'}
+              </span>
+            )}
             {!isReply && (
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
                 onClick={() => setOnReply(!onReply)}
-                className="text-sm px-2 py-1 h-auto hover:bg-white/5"
+                className="text-[13px] text-[#AAAAAA] hover:text-white w-fit"
               >
-                <MessageCircle className="h-4 w-4 mr-1" />
                 Reply
-                {reply.length > 0 && <span className="ml-1">{reply.length}</span>}
-              </Button>
+              </button>
             )}
           </div>
 
-          {!isReply && onReply && (
-            <div className="mt-3">
+          {onReply && !isReply && (
+            <div className="mt-4">
               <CommentForm
                 close={() => setOnReply(false)}
                 videoId={videoId}
@@ -93,16 +105,16 @@ const CommentCard = ({
         </div>
       </div>
 
-      {reply.length > 0 && (
-        <div className="flex flex-col gap-y-5 mt-5 border-l-2 border-white/10">
-          {reply.map((r) => (
+      {sortedReplies.length > 0 && (
+        <div className="flex flex-col gap-4">
+          {sortedReplies.map((r) => (
             <CommentCard
+              key={r.id}
               isReply
               reply={[]}
               comment={r.comment}
-              commentId={r.commentId!}
+              commentId={r.id}
               videoId={videoId}
-              key={r.id}
               author={{
                 image: r.User?.image || '',
                 firstname: r.User?.firstname || '',
@@ -113,7 +125,7 @@ const CommentCard = ({
           ))}
         </div>
       )}
-    </Card>
+    </div>
   )
 }
 
