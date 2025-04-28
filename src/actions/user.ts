@@ -378,7 +378,6 @@ export const getPaymentInfo = async () => {
     videoId: string | null;
     commentId: string | null;
     createdAt: Date;
-    updatedAt: Date;
     userId: string | null;
     User: {
       id: string;
@@ -393,7 +392,6 @@ export const getPaymentInfo = async () => {
       videoId: string | null;
       commentId: string;
       createdAt: Date;
-      updatedAt: Date;
       userId: string | null;
       User: {
         id: string;
@@ -442,23 +440,26 @@ export const getPaymentInfo = async () => {
             }
           }
         },
-      })
+      }) as CommentWithUser[]
   
       // Transform the comments to include the current user's image
-      const transformedComments = comments.map((comment: CommentWithUser) => ({
-        ...comment,
-        User: comment.User ? {
-          ...comment.User,
-          image: comment.User.clerkId === currentClerkUser?.id ? currentClerkUser?.imageUrl : comment.User.image
-        } : null,
-        reply: comment.reply.map((reply: CommentWithUser['reply'][0]) => ({
-          ...reply,
-          User: reply.User ? {
-            ...reply.User,
-            image: reply.User.clerkId === currentClerkUser?.id ? currentClerkUser?.imageUrl : reply.User.image
-          } : null
-        }))
-      }))
+      const transformedComments = comments.map((comment: CommentWithUser) => {
+        const transformedComment: CommentWithUser = {
+          ...comment,
+          User: comment.User ? {
+            ...comment.User,
+            image: comment.User.clerkId === currentClerkUser?.id ? currentClerkUser?.imageUrl ?? '' : comment.User.image ?? ''
+          } : null,
+          reply: comment.reply.map((reply: CommentWithUser['reply'][0]) => ({
+            ...reply,
+            User: reply.User ? {
+              ...reply.User,
+              image: reply.User.clerkId === currentClerkUser?.id ? currentClerkUser?.imageUrl ?? '' : reply.User.image ?? ''
+            } : null
+          }))
+        }
+        return transformedComment
+      })
   
       return { status: 200, data: transformedComments }
     } catch (error) {
@@ -548,3 +549,66 @@ export const getPaymentInfo = async () => {
     }
   }
   
+  export const acceptInvite = async (inviteId: string) => {
+    try {
+      const user = await currentUser()
+      if (!user)
+        return {
+          status: 404,
+        }
+      const invitation = await client.invite.findUnique({
+        where: {
+          id: inviteId,
+        },
+        select: {
+          workSpaceId: true,
+          reciever: {
+            select: {
+              clerkId: true,
+            },
+          },
+        },
+      })
+
+      console.log('ACCEPT_INVITE_DEBUG', {
+        currentUserClerkId: user.id,
+        invitationRecieverClerkId: invitation?.reciever?.clerkId,
+        inviteId
+      })
+
+      if (user.id !== invitation?.reciever?.clerkId) return { status: 401 }
+      const acceptInvite = client.invite.update({
+        where: {
+          id: inviteId,
+        },
+        data: {
+          accepted: true,
+        },
+      })
+  
+      const updateMember = client.user.update({
+        where: {
+          clerkId: user.id,
+        },
+        data: {
+          members: {
+            create: {
+              workSpaceId: invitation.workSpaceId,
+            },
+          },
+        },
+      })
+  
+      const membersTransaction = await client.$transaction([
+        acceptInvite,
+        updateMember,
+      ])
+  
+      if (membersTransaction) {
+        return { status: 200 }
+      }
+      return { status: 400 }
+    } catch (error) {
+      return { status: 400 }
+    }
+  }

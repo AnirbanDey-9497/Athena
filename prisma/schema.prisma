@@ -47,29 +47,6 @@ model Comment {
   createdAt DateTime  @default(now())
 }
 
-model CommentMention {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  commentId String   @db.Uuid
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @db.Uuid
-  createdAt DateTime @default(now())
-
-  @@unique([commentId, userId])
-}
-
-model CommentReaction {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  commentId String   @db.Uuid
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @db.Uuid
-  type      String   // e.g., 'LIKE', 'LOVE', 'HAHA', etc.
-  createdAt DateTime @default(now())
-
-  @@unique([commentId, userId, type])
-}
-
 model Subscription {
   id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId    String?     @unique @db.Uuid
