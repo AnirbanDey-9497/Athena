@@ -1,8 +1,8 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQueryData } from '@/hooks/useQueryData'
-import { getPreviewVideo } from '@/actions/workspace'
+import { getPreviewVideo, sendEmailForFirstView } from '@/actions/workspace'
 import { VideoProps } from '@/types/index.type'
 import CopyLink from '../copy-link'
 import RichLink from '../rich-link'
@@ -20,30 +20,52 @@ type Props = {
 
 const VideoPreview = ({ videoId }: Props) => {
     const router = useRouter()
-    
     const { data } = useQueryData(['preview-video', videoId], () =>
         getPreviewVideo(videoId)
     )
 
+    // Always define these, even if data is undefined
+    const { data: video, status, author } = (data ?? {}) as Partial<VideoProps> & { data?: VideoProps['data'] }
+
+    const notifyFirstView = async () => {
+        console.log('[VideoPreview] notifyFirstView called for videoId:', videoId)
+        const result = await sendEmailForFirstView(videoId)
+        console.log('[VideoPreview] sendEmailForFirstView result:', result)
+        return result
+    }
+
+    useEffect(() => {
+        if (video && video.views === 0) {
+            console.log('[VideoPreview] useEffect: video.views === 0, calling notifyFirstView')
+            notifyFirstView()
+        }
+        return () => {
+            if (video) {
+                console.log('[VideoPreview] useEffect cleanup: calling notifyFirstView')
+                notifyFirstView()
+            }
+        }
+    }, [video])
+
     if (!data) return null
-
-    const { data: video, status, author } = data as VideoProps
-
-    if (status !== 200) router.push('/')
+    if (status !== 200) {
+        router.push('/')
+        return null
+    }
 
     const daysAgo = Math.floor(
-        (new Date().getTime() - video.createdAt.getTime()) / (24 * 60 * 60 * 1000)
+        (new Date().getTime() - (video?.createdAt?.getTime?.() ?? 0)) / (24 * 60 * 60 * 1000)
     )
 
     const handleDownload = async () => {
-        const videoUrl = `${process.env.NEXT_PUBLIC_CLOUD_FRONT_STREAM_URL}/${video.source}`
+        const videoUrl = `${process.env.NEXT_PUBLIC_CLOUD_FRONT_STREAM_URL}/${video?.source ?? ''}`
         try {
             const response = await fetch(videoUrl)
             const blob = await response.blob()
             const url = window.URL.createObjectURL(blob)
             const a = document.createElement('a')
             a.href = url
-            a.download = `${video.title || 'video'}.mp4`
+            a.download = `${video?.title || 'video'}.mp4`
             document.body.appendChild(a)
             a.click()
             window.URL.revokeObjectURL(url)
@@ -59,7 +81,7 @@ const VideoPreview = ({ videoId }: Props) => {
                 <div>
                     <div className="flex gap-x-5 items-start justify-between">
                         <h2 className="text-white text-4xl font-bold">
-                            {video.title || 'Untitled Video'}
+                            {video?.title || 'Untitled Video'}
                         </h2>
                         
                         {/* {author ? (
@@ -74,7 +96,7 @@ const VideoPreview = ({ videoId }: Props) => {
                     </div>
                     <span className="flex gap-x-3 mt-2">
                         <p className="text-[#9D9D9D] capitalize">
-                            {video.User?.firstname} {video.User?.lastname}
+                            {video?.User?.firstname} {video?.User?.lastname}
                         </p>
                         <p className="text-[#707070]">
                             {daysAgo === 0 ? 'Today' : `${daysAgo}d ago`}
@@ -87,7 +109,7 @@ const VideoPreview = ({ videoId }: Props) => {
                   controls
                 >
                      <source
-                         src={`${process.env.NEXT_PUBLIC_CLOUD_FRONT_STREAM_URL}/${video.source}#1`}
+                         src={`${process.env.NEXT_PUBLIC_CLOUD_FRONT_STREAM_URL}/${video?.source ?? ''}#1`}
                      />
                 </video>
                 <div className="flex flex-col text-2xl gap-y-4">
@@ -104,7 +126,7 @@ const VideoPreview = ({ videoId }: Props) => {
                           )} */}
                     </div>
                     <p className="text-[#BDBDBD] text-lg text-medium">
-                        {video.description || 'No description'}
+                        {video?.description || 'No description'}
                     </p>
                 </div>
             </div>
@@ -116,10 +138,10 @@ const VideoPreview = ({ videoId }: Props) => {
                         videoId={videoId}
                     />
                     <RichLink
-                        description={truncateString(video.description as string, 150)}
+                        description={truncateString(video?.description as string, 150)}
                         id={videoId}
-                        source={video.source}
-                        title={video.title as string}
+                        source={video?.source ?? ''}
+                        title={video?.title as string}
                     />
                     <Button
                         variant="ghost"
@@ -137,12 +159,12 @@ const VideoPreview = ({ videoId }: Props) => {
                     >
                         <AiTools
                             videoId={videoId}
-                            trial={video.User?.trial!}
-                            plan={video.User?.subscription?.plan!}
+                            trial={video?.User?.trial ?? false}
+                            plan={video?.User?.subscription?.plan ?? 'FREE'}
                         />
-                        <VideoTranscript transcript={video.summery!} />
-                            <Activities
-                            author={video.User?.firstname as string}
+                        <VideoTranscript transcript={video?.summery ?? ''} />
+                        <Activities
+                            author={video?.User?.firstname as string || ''}
                             videoId={videoId}
                         />
                     </TabMenu>
