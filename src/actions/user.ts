@@ -4,6 +4,9 @@ import { client } from "@/lib/prisma"
 import { auth, currentUser } from "@clerk/nextjs/server"
 import { Prisma } from '@prisma/client'
 import nodemailer from 'nodemailer'
+import  Stripe  from "stripe"
+
+const stripe = new Stripe(process.env.STRIPE_CLIENT_SECRET as string)
 
 export const sendEmail = async (
     to: string,
@@ -612,3 +615,56 @@ export const getPaymentInfo = async () => {
       return { status: 400 }
     }
   }
+
+  export const completeSubscription = async (session_id: string) => {
+    try {
+      console.log('Starting subscription completion for session:', session_id)
+      const user = await currentUser()
+      if (!user) {
+        console.error('No user found in completeSubscription')
+        return { status: 404 }
+      }
+      console.log('Found user:', user.id)
+
+      const session = await stripe.checkout.sessions.retrieve(session_id)
+      console.log('Retrieved Stripe session:', session.id)
+      
+      if (!session) {
+        console.error('No session found for ID:', session_id)
+        return { status: 404 }
+      }
+
+      if (!session.customer) {
+        console.error('No customer ID in session')
+        return { status: 400 }
+      }
+
+      const customer = await client.user.update({
+        where: {
+          clerkId: user.id,
+        },
+        data: {
+          subscription: {
+            update: {
+              data: {
+                customerId: session.customer as string,
+                plan: 'PRO',
+              },
+            },
+          },
+        },
+      })
+
+      if (!customer) {
+        console.error('Failed to update user subscription')
+        return { status: 404 }
+      }
+
+      console.log('Successfully updated user subscription')
+      return { status: 200 }
+    } catch (error) {
+      console.error('Error in completeSubscription:', error)
+      return { status: 400 }
+    }
+  }
+  
