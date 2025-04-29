@@ -1,0 +1,67 @@
+import { client } from '@/lib/prisma'
+import { clerkClient } from '@clerk/nextjs/server'
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function GET(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
+  const { id } = await context.params
+  console.log('Enpoint hit ✅')
+
+  try {
+    const userProfile = await client.user.findUnique({
+      where: {
+        clerkId: id,
+      },
+      include: {
+        studio: true,
+        subscription: {
+          select: {
+            plan: true,
+          },
+        },
+      },
+    })
+    if (userProfile)
+      return NextResponse.json({ status: 200, user: userProfile })
+      
+    const clerk = await clerkClient()
+    const clerkUserInstance = await clerk.users.getUser(id)
+    
+    const createUser = await client.user.create({
+      data: {
+        clerkId: id,
+        email: clerkUserInstance.emailAddresses[0].emailAddress,
+        firstname: clerkUserInstance.firstName || '',
+        lastname: clerkUserInstance.lastName || '',
+        studio: {
+          create: {},
+        },
+        workspace: {
+          create: {
+            name: `${clerkUserInstance.firstName || 'User'}'s Workspace`,
+            type: 'PERSONAL',
+          },
+        },
+        subscription: {
+          create: {},
+        },
+      },
+      include: {
+        subscription: {
+          select: {
+            plan: true,
+          },
+        },
+      },
+    })
+
+    if (createUser) return NextResponse.json({ status: 201, user: createUser })
+
+    return NextResponse.json({ status: 400 })
+  } catch (error) {
+    console.log('ERROR', error)
+    return NextResponse.json({ status: 500, error: 'Internal server error' })
+  }
+}
