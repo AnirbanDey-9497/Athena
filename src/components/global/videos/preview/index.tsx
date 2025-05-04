@@ -13,6 +13,7 @@ import TabMenu from '../../tabs'
 import AiTools from '../../ai-tools'
 import VideoTranscript from '../../video-transcript'
 import Activities from '@/components/global/activities'
+import EditVideo from '../edit'
 
 type Props = {
     videoId: string
@@ -84,15 +85,15 @@ const VideoPreview = ({ videoId }: Props) => {
                             {video?.title || 'Untitled Video'}
                         </h2>
                         
-                        {/* {author ? (
+                        {author ? (
                            <EditVideo
                            videoId={videoId}
-                           title={video.title as string}
-                           description={video.description as string}
+                           title={video?.title as string}
+                           description={video?.description as string}
                            />
                            ) : (
                            <></>
-                        )} */}
+                        )} 
                     </div>
                     <span className="flex gap-x-3 mt-2">
                         <p className="text-[#9D9D9D] capitalize">
