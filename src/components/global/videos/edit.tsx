@@ -17,11 +17,11 @@ const EditVideo = ({ description, title, videoId }: Props) => {
         </Button>
       }
     >
-      {/* <EditVideoForm
+      <EditVideoForm
         videoId={videoId}
         title={title}
         description={description}
-      /> */}
+      />
     </Modal>
   )
 }
