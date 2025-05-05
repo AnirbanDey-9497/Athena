@@ -25,6 +25,7 @@ type Props = {
   source: string
   processing: boolean
   workspaceId: string
+  showcase?: boolean
 }
 
 const VideoCard = (props: Props) => {
@@ -32,6 +33,10 @@ const VideoCard = (props: Props) => {
   const daysAgo = Math.floor(
     (new Date().getTime() - props.createdAt.getTime()) / (24 * 60 * 60 * 1000)
   )
+
+  const link = props.showcase
+    ? `/showcase/video/${props.id}`
+    : `/dashboard/${props.workspaceId}/video/${props.id}`
 
   return (
     <Loader
@@ -52,7 +57,7 @@ const VideoCard = (props: Props) => {
           />
         </div>
         <Link
-          href={`/dashboard/${props.workspaceId}/video/${props.id}`}
+          href={link}
           className="hover:bg-[#252525] transition duration-150 flex flex-col justify-between h-full"
         >
           <video
@@ -100,6 +105,11 @@ const VideoCard = (props: Props) => {
               </span>
             </div>
           </div>
+          {props.showcase && (
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-lg font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+              Login to watch full video
+            </div>
+          )}
         </Link>
       </div>
     </Loader>
