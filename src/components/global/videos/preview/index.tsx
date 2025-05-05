@@ -158,11 +158,18 @@ const VideoPreview = ({ videoId }: Props) => {
                         defaultValue="Ai tools"
                         triggers={['Ai tools', 'Transcript', 'Activity']}
                     >
-                        <AiTools
+                        {video?.summery && video?.summery.trim().length > 0 ? (
+                          <AiTools
                             videoId={videoId}
                             trial={video?.User?.trial ?? false}
                             plan={video?.User?.subscription?.plan ?? 'FREE'}
-                        />
+                            transcript={video?.summery}
+                          />
+                        ) : (
+                          <div className="p-4 bg-yellow-100 text-yellow-800 rounded">
+                            Transcript not available for this video yet.
+                          </div>
+                        )}
                         <VideoTranscript transcript={video?.summery ?? ''} />
                         <Activities
                             author={video?.User?.firstname as string || ''}

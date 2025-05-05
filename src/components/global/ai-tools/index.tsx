@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { TabsContent } from '@/components/ui/tabs'
-import React from 'react'
+import React, { useState } from 'react'
 import Loader from '../loader'
 import VideoRecorderDuotone from '@/components/icons/video-recorder-duotone'
 import { FileDuoToneBlack } from '@/components/icons'
@@ -17,17 +17,37 @@ type Props = {
   plan: 'PRO' | 'FREE'
   trial: boolean
   videoId: string
+  transcript?: string
 }
 
-const AiTools = ({ plan, trial, videoId }: Props) => {
-  //Are they on a free plan?
-  //have they already tried the AI feature?
-  //if not? Try button
-  
-  // useMutationData
-  //serveraction titles and description
+const AiTools = ({ plan, trial, videoId, transcript = '' }: Props) => {
+  // State for AI Q&A
+  const [question, setQuestion] = useState('')
+  const [answer, setAnswer] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  //WIP: setup the ai hook
+  // Ask AI handler
+  const askAI = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setAnswer('')
+    setError('')
+    try {
+      const res = await fetch('http://localhost:5001/api/ai-qa', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, transcript, plan }),
+      })
+      const data = await res.json()
+      if (res.ok) setAnswer(data.answer)
+      else setError(data.error || 'AI Q&A failed')
+    } catch (err) {
+      setError('Network error')
+    }
+    setLoading(false)
+  }
+
   return (
     <TabsContent value="Ai tools">
       <div className="p-5 bg-[#1D1D1D]  rounded-xl flex flex-col gap-y-6 ">
@@ -60,14 +80,6 @@ const AiTools = ({ plan, trial, videoId }: Props) => {
                 Pay Now
               </Loader>
             </Button>
-            {/* <Button className=" mt-2 text-sm">
-            <Loader
-              state={false}
-              color="#000"
-            >
-              Generate Now
-            </Loader>
-          </Button> */}
           </div>
         </div>
         <div className=" border-[1px] rounded-xl p-4 gap-4 flex flex-col bg-[#1b0f1b7f] ">
@@ -112,6 +124,29 @@ const AiTools = ({ plan, trial, videoId }: Props) => {
               </p>
             </div>
           </div>
+          {/* AI Q&A UI for PRO users */}
+          {plan === 'PRO' ? (
+            <div className="mt-6 p-4 bg-[#232336] rounded-xl flex flex-col gap-2">
+              <h3 className="text-lg font-semibold text-[#a22fe0]">Ask AI about this video</h3>
+              <form onSubmit={askAI} className="flex flex-col gap-2">
+                <input
+                  value={question}
+                  onChange={e => setQuestion(e.target.value)}
+                  placeholder="Ask about this video..."
+                  className="border p-2 rounded bg-[#18181b] text-white"
+                />
+                <Button type="submit" disabled={loading || !question} className="bg-[#a22fe0] text-white px-4 py-2 rounded">
+                  {loading ? 'Asking...' : 'Ask'}
+                </Button>
+              </form>
+              {answer && <div className="mt-2 p-2 bg-green-100 text-green-800 rounded">{answer}</div>}
+              {error && <div className="mt-2 p-2 bg-red-100 text-red-800 rounded">{error}</div>}
+            </div>
+          ) : (
+            <div className="mt-6 p-4 bg-yellow-100 text-yellow-800 rounded">
+              Upgrade to PRO to use AI Q&A features!
+            </div>
+          )}
         </div>
       </div>
     </TabsContent>
