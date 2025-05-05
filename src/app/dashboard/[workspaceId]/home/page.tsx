@@ -3,6 +3,7 @@ import { getWixContent, howToPost } from '@/actions/workspace'
 import VideoCard from '@/components/global/videos/video-card'
 import React from 'react'
 import Videos from '@/components/global/videos'
+import RekordGuide from '@/components/global/rekord-guide'
 
 // Add type for params
 interface Props {
@@ -17,6 +18,8 @@ const Home = async ({ params }: Props) => {
 
   return (
     <div className="flex flex-col gap-8 items-center justify-center">
+      {/* Rekord Guide Section */}
+      <RekordGuide />
       {/* Recent Videos Section */}
       <div className="w-full max-w-4xl flex flex-col gap-4 mb-8">
         <h2 className="text-2xl font-semibold text-white">Recent Videos</h2>
