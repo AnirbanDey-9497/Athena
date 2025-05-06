@@ -12,7 +12,7 @@ interface Props {
   }
 }
 
-const Home = async ({ params }: Props) => {
+const Home = async ({ params }: { params: { workspaceId: string } }) => {
   const videos = await getWixContent()
   const post = await howToPost()
 
