@@ -42,7 +42,7 @@ Rekord is a powerful video recording and sharing platform that enables users to 
 - **State Management**: Redux Toolkit for global state management
 - **Data Fetching**: TanStack Query (React Query) for efficient data fetching
 - **Styling**: Tailwind CSS with a comprehensive UI component library
-- **Database**: Prisma ORM for type-safe database operations
+- **Database**: Neon (PostgreSQL) with Prisma ORM
 - **Payment Processing**: Stripe integration for secure payments
 - **Email Services**: Nodemailer for email functionality
 - **Form Handling**: React Hook Form with Zod validation
@@ -57,7 +57,7 @@ Rekord is a powerful video recording and sharing platform that enables users to 
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **Authentication**: Clerk
-- **Database**: Prisma
+- **Database**: Neon (PostgreSQL) with Prisma ORM
 - **State Management**: Redux Toolkit
 - **Data Fetching**: TanStack Query
 - **UI Components**: Radix UI
@@ -83,7 +83,16 @@ npm install
 3. Set up environment variables:
 Create a `.env` file in the root directory and add necessary environment variables.
 
-4. Run the development server:
+4. Set up the database:
+```bash
+# Generate Prisma Client
+npx prisma generate
+
+# Run database migrations
+npx prisma migrate dev
+```
+
+5. Run the development server:
 ```bash
 npm run dev
 ```
@@ -110,12 +119,90 @@ src/
 └── actions/      # Server actions
 ```
 
+## 🗄️ Database
+
+### Schema
+The database schema is defined in `prisma/schema.prisma`. Key models include:
+
+- **User**: User profiles and authentication data
+- **Recording**: Video recording metadata and storage information
+- **Share**: Sharing permissions and access controls
+- **Comment**: User comments and feedback on recordings
+
+### Migrations
+Database migrations are managed using Prisma Migrate:
+
+```bash
+# Create a new migration
+npx prisma migrate dev --name migration_name
+
+# Apply pending migrations
+npx prisma migrate deploy
+
+# Reset database (development only)
+npx prisma migrate reset
+```
+
+### Database Management
+- **Development**: Local PostgreSQL instance or Neon development database
+- **Production**: Neon production database with automatic backups
+- **Backup**: Daily automated backups with point-in-time recovery
+
+## 🔄 State Management
+
+### Redux Toolkit
+The application uses Redux Toolkit for global state management. Key features include:
+
+#### Store Structure
+```
+src/redux/
+├── store.ts          # Redux store configuration
+├── slices/           # Feature-based state slices
+│   ├── auth/        # Authentication state
+│   ├── recording/   # Recording session state
+│   ├── player/      # Video player state
+│   └── ui/          # UI state management
+└── hooks.ts         # Custom Redux hooks
+```
+
+#### Key State Slices
+- **Auth Slice**: User authentication and session management
+- **Recording Slice**: Recording session state, controls, and metadata
+- **Player Slice**: Video playback state and controls
+- **UI Slice**: Application-wide UI state (theme, modals, etc.)
+
+#### Usage Example
+```typescript
+// Using Redux in components
+import { useDispatch, useSelector } from 'react-redux';
+import { setRecordingState } from '@/redux/slices/recording';
+
+// In your component
+const dispatch = useDispatch();
+const recordingState = useSelector((state) => state.recording);
+
+// Dispatching actions
+dispatch(setRecordingState({ isRecording: true }));
+```
+
+### State Persistence
+- Redux state is persisted using Redux Persist
+- Critical state is saved to localStorage
+- Session-specific state is managed in memory
+
 ## 🔐 Environment Variables
 
 Create a `.env` file with the following variables:
 
 ```env
-# Add your environment variables here
+# Database
+DATABASE_URL="postgresql://user:password@ep-something.region.aws.neon.tech/neondb"
+
+# Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+
+# Other environment variables...
 ```
 
 ## 🤝 Contributing
