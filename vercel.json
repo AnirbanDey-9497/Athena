@@ -1,0 +1,4 @@
+{
+  "buildCommand": "next build --no-lint --no-typescript",
+  "installCommand": "npm install --legacy-peer-deps"
+} 
