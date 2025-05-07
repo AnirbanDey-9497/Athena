@@ -319,7 +319,7 @@ This project is licensed under the Apache License - see the [LICENSE](LICENSE) f
 
 ## 👥 Authors
 
-- Your Name - Initial work
+- Anirban Dey - Initial work
 
 ## 🙏 Acknowledgments
 
