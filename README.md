@@ -1,3 +1,12 @@
+> **⚠️ Important: Project Integration Notice**
+>
+> This project is not intended to be used as a standalone application. For full functionality, you must use it together with:
+>
+> - [Rekord-Desktop](<https://github.com/AnirbanDey-9497/Rekord-Desktop>) — An Electron-powered desktop app for screen and video capture.
+> - [Rekord Express](<https://github.com/AnirbanDey-9497/Rekord-Express>) — The backend service that connects to Rekord-Desktop via sockets, streams video chunks to CloudFront, and manages storage.
+>
+> Please refer to the respective repositories for setup and integration instructions.
+
 # Rekord
 
 A modern, full-stack web application built with Next.js, TypeScript, and a robust tech stack for optimal performance and developer experience.
@@ -7,6 +16,43 @@ A modern, full-stack web application built with Next.js, TypeScript, and a robus
 Rekord is a powerful video recording and sharing platform that enables users to create, manage, and share video content seamlessly. Similar to Loom, it provides an intuitive interface for screen recording, video sharing, and collaboration.
 
 ## ✨ User Features
+
+### 🏠 Dashboard
+- **Centralized Dashboard**: Access all your videos, folders, and analytics from a single, intuitive dashboard.
+
+  [![Dashboard Overview](public/dashboard.png)](public/dashboard.png)
+  *The dashboard provides a comprehensive overview of your video library and activity.*
+
+### 🤖 AI-Powered Features
+- **AI Description & Transcript**: Automatically generate accurate description & transcripts for your videos, making them searchable and accessible.
+
+  [![AI Transcript Example](public/ai-transcript.png)](public/ai-transcript.png)
+  *View and search through AI-generated video transcripts.*
+
+- **AI Chatbot**: Interact with an AI chatbot that answers questions based on the video transcript, enhancing viewer engagement and support.
+
+  [![AI Chatbot Example](public/ai-chatbot.png)](public/ai-chatbot.png)
+  *Ask questions about the video and get instant AI-powered responses.*
+
+### ☁️ Cloud Video Storage & Delivery
+- **Fast & Secure Streaming**: All videos are stored on AWS CloudFront, ensuring fast, reliable, and secure video delivery to users worldwide.
+
+  [![CloudFront Video Delivery](public/cloudfront.png)](public/cloudfront.png)
+  *Videos are streamed directly from CloudFront for optimal performance and scalability.*
+
+### 📎 Embeddable Links & GIF Previews
+- **Embeddable Links**: Copy and paste video links into platforms like Gmail, where they appear as animated GIF previews for instant context.
+
+  [![Embeddable GIF Preview](public/embed-gif.png)](public/embed-gif.png)
+  *Share videos with rich GIF previews in emails and other platforms.*
+
+### ⚙️ Customizable Settings
+- **Settings with Modes**: Choose between three distinct modes in the settings to tailor the platform to your workflow and preferences.
+
+  [![Settings Modes](public/settings-modes.png)](public/settings-modes.png)
+  *Easily switch between different modes to customize your Rekord experience.*
+
+---
 
 ### 🎬 Video Recording
 - **Screen Recording**: Capture your entire screen or specific windows
@@ -50,6 +96,38 @@ Rekord is a powerful video recording and sharing platform that enables users to 
 - **Animations**: Tailwind animations and custom transitions
 - **Charts**: Recharts for data visualization
 - **Notifications**: Toast notifications with react-hot-toast
+
+---
+
+> **⚡ Related Projects Overview**
+>
+> Rekord is designed to work seamlessly with two companion applications:
+>
+> ### 🖥️ Rekord Desktop
+> - Electron-powered desktop app for screen and video capture
+> - Built with React, TypeScript, Vite, and Tailwind CSS
+> - Real-time communication with backend via Socket.IO
+> - Modern UI with Radix UI and Shadcn UI components
+> - Authentication with Clerk
+> - Cross-platform and responsive design
+>
+
+[![Rekord Desktop Example](public/rekord-desktop.png)](public/rekord-desktop.png)
+  *Record Videos using your computer effortlessly.*
+
+
+> ### 🛠️ Rekord Express
+> - Node.js/Express backend for video processing and storage
+> - Real-time video chunk handling and WebSocket support
+> - AWS S3/CloudFront integration for secure, scalable storage
+> - OpenAI-powered features: transcription, Q&A, title/summary generation
+> - Plan-based access control (PRO features)
+> - API endpoints for AI and video management
+>
+> These apps together enable end-to-end video capture, processing, AI analysis, and secure cloud delivery for the Rekord platform.
+
+[![Rekord Express Example](public/rekord-express.png)](public/rekord-express.png)
+  *Save videos to Cloudfront via WebSocket for real time communication.*
 
 ## 🛠️ Tech Stack
 
@@ -219,7 +297,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- Anirban Dey - Initial work
+- Your Name - Initial work
 
 ## 🙏 Acknowledgments
 
