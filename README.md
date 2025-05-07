@@ -109,6 +109,7 @@ Rekord is a powerful video recording and sharing platform that enables users to 
 - **Notification System**: Real-time notifications for first view, team activity, and important events
 - **User Customization**: Multiple modes and settings to personalize your experience
 - **Enhanced Security**: End-to-end encryption, GDPR/CCPA compliance, and password-protected sharing
+- **Wix Studio CMS Integration**: Seamless content management and publishing with Wix Studio
 
 ## 🏷️ Membership Plans
 
@@ -169,6 +170,7 @@ Rekord offers two types of membership to suit your needs:
 - **Payment**: Stripe
 - **Email**: Nodemailer
 - **Notifications**: react-hot-toast
+- **CMS**: Wix Studio
 
 ## 📦 Installation
 
@@ -295,39 +297,33 @@ dispatch(setRecordingState({ isRecording: true }));
 
 ## 🔐 Environment Variables
 
-Create a `.env` file with the following variables:
+Create a `.env` file in the root directory with the following variables:
 
 ```env
 # Database
 DATABASE_URL="postgresql://user:password@ep-something.region.aws.neon.tech/neondb"
 
-# Clerk Authentication
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_1234567890abcdef
-CLERK_SECRET_KEY=sk_test_abcdef1234567890
+# Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
 
-# Stripe Payment
-STRIPE_CLIENT_SECRET=sk_test_stripeclientsecret
-STRIPE_SUBSCRIPTION_PRICE_ID=price_1234567890abcdef
+# Host URLs
+NEXT_PUBLIC_HOST_URL="http://localhost:3000" # Your application's base URL
+NEXT_PUBLIC_CLOUD_FRONT_STREAM_URL="https://your-cloudfront-domain.cloudfront.net" # AWS CloudFront URL for video streaming
 
-# Host URL (for links in emails, etc.)
-NEXT_PUBLIC_HOST_URL=https://your-app-domain.com
+# Email Configuration
+MAILER_EMAIL="your-email@gmail.com"
+MAILER_PASSWORD="your-app-specific-password"
 
-# Nodemailer Email Service
-MAILER_EMAIL=your-email@example.com
-MAILER_PASSWORD=your-email-password
+# Payment Processing (Stripe)
+STRIPE_CLIENT_SECRET="your_stripe_secret_key"
+STRIPE_SUBSCRIPTION_PRICE_ID="your_stripe_price_id"
 
-# (Optional) AWS/Cloud Storage (if used directly in this app)
-# ACCESS_KEY=your_aws_access_key
-# SECRET_KEY=your_aws_secret_key
-# BUCKET_REGION=your_aws_region
-# BUCKET_NAME=your_s3_bucket_name
+# Wix Integration
+WIX_OAUTH_KEY="your_wix_oauth_key"
 
-# (Optional) OpenAI API Key (if used directly in this app)
-# OPEN_AI_KEY=your_openai_api_key
-
-# (Optional) Electron/Backend Host (if needed for integration)
-# ELECTRON_HOST=
-# NEXT_API_HOST=
+# Node Environment
+NODE_ENV="development" # or "production"
 ```
 
 ## 🤝 Contributing
