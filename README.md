@@ -24,7 +24,7 @@ Rekord is a powerful video recording and sharing platform that enables users to 
   *The dashboard provides a comprehensive overview of your video library and activity.*
 
 ### 🤖 AI-Powered Features
-- **AI Title, Description & Transcript**: Automatically generate accurate title,description & transcripts for your videos, making them searchable and accessible.
+- **AI Description & Transcript**: Automatically generate accurate description & transcripts for your videos, making them searchable and accessible.
 
   [![AI Transcript Example](public/ai-transcript.png)](public/ai-transcript.png)
   *View and search through AI-generated video transcripts.*
