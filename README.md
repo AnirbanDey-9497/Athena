@@ -276,11 +276,33 @@ Create a `.env` file with the following variables:
 # Database
 DATABASE_URL="postgresql://user:password@ep-something.region.aws.neon.tech/neondb"
 
-# Authentication
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-CLERK_SECRET_KEY=your_clerk_secret_key
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_1234567890abcdef
+CLERK_SECRET_KEY=sk_test_abcdef1234567890
 
-# Other environment variables...
+# Stripe Payment
+STRIPE_CLIENT_SECRET=sk_test_stripeclientsecret
+STRIPE_SUBSCRIPTION_PRICE_ID=price_1234567890abcdef
+
+# Host URL (for links in emails, etc.)
+NEXT_PUBLIC_HOST_URL=https://your-app-domain.com
+
+# Nodemailer Email Service
+MAILER_EMAIL=your-email@example.com
+MAILER_PASSWORD=your-email-password
+
+# (Optional) AWS/Cloud Storage (if used directly in this app)
+# ACCESS_KEY=your_aws_access_key
+# SECRET_KEY=your_aws_secret_key
+# BUCKET_REGION=your_aws_region
+# BUCKET_NAME=your_s3_bucket_name
+
+# (Optional) OpenAI API Key (if used directly in this app)
+# OPEN_AI_KEY=your_openai_api_key
+
+# (Optional) Electron/Backend Host (if needed for integration)
+# ELECTRON_HOST=http://localhost:5173
+# NEXT_API_HOST=http://localhost:3000
 ```
 
 ## 🤝 Contributing
