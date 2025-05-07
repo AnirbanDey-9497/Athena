@@ -1,3 +1,4 @@
+
 > **⚠️ Important: Project Integration Notice**
 >
 > This project is not intended to be used as a standalone application. For full functionality, you must use it together with:
@@ -9,7 +10,8 @@
 
 # Rekord
 
-A modern, full-stack web application built with Next.js, TypeScript, and a robust tech stack for optimal performance and developer experience.
+A modern, AI-powered video recording, sharing, and analysis platform. Rekord integrates seamlessly with a desktop Electron app and a Node.js/Express backend for end-to-end video capture, cloud storage, and advanced AI features like transcription, Q&A, and automated summaries.
+
 
 ## 🎥 Platform Overview
 
@@ -52,6 +54,12 @@ Rekord is a powerful video recording and sharing platform that enables users to 
   [![Settings Modes](public/settings-modes.png)](public/settings-modes.png)
   *Easily switch between different modes to customize your Rekord experience.*
 
+### 💬 Video Commenting
+- **Comment & Collaborate**: Add comments and feedback directly on video recordings to enhance collaboration and discussion.
+
+  [![Video Commenting Example](public/video-commenting.png)](public/video-commenting.png)
+  *Collaborate with your team by commenting on videos in real time.*
+
 ---
 
 ### 🎬 Video Recording
@@ -87,6 +95,7 @@ Rekord is a powerful video recording and sharing platform that enables users to 
 - **Authentication**: Secure user authentication powered by Clerk
 - **State Management**: Redux Toolkit for global state management
 - **Data Fetching**: TanStack Query (React Query) for efficient data fetching
+- **Real-Time Communication**: Socket.IO for instant video chunk transfer and collaboration
 - **Styling**: Tailwind CSS with a comprehensive UI component library
 - **Database**: Neon (PostgreSQL) with Prisma ORM
 - **Payment Processing**: Stripe integration for secure payments
@@ -96,6 +105,22 @@ Rekord is a powerful video recording and sharing platform that enables users to 
 - **Animations**: Tailwind animations and custom transitions
 - **Charts**: Recharts for data visualization
 - **Notifications**: Toast notifications with react-hot-toast
+- **Advanced Analytics**: Detailed video engagement metrics and viewer insights
+- **Notification System**: Real-time notifications for first view, team activity, and important events
+- **User Customization**: Multiple modes and settings to personalize your experience
+- **Enhanced Security**: End-to-end encryption, GDPR/CCPA compliance, and password-protected sharing
+
+## 🏷️ Membership Plans
+
+Rekord offers two types of membership to suit your needs:
+
+| Plan              | Price   | Videos           | Duration         | Organizations         | Team Members         | AI Features         |
+|-------------------|---------|------------------|------------------|----------------------|----------------------|---------------------|
+| **Free Trial**    | $0/m    | 25/month (720p)  | 5 min/video      | 1                    | None                 | 1-time AI test      |
+| **Professional**  | $99/m   | Unlimited        | Unlimited        | Unlimited            | Unlimited            | All AI features     |
+
+- **Free Trial:** Great for getting started. Limited to 25 videos/month (720p), 5 minutes per video, 1 organization, no team members, and a one-time AI feature test.
+- **Professional Plan:** Unlocks unlimited videos, duration, organizations, team members, and full access to all AI features.
 
 ---
 
@@ -138,18 +163,18 @@ Rekord is a powerful video recording and sharing platform that enables users to 
 - **Database**: Neon (PostgreSQL) with Prisma ORM
 - **State Management**: Redux Toolkit
 - **Data Fetching**: TanStack Query
+- **Real-Time Communication**: Socket.IO
 - **UI Components**: Radix UI
 - **Form Handling**: React Hook Form + Zod
 - **Payment**: Stripe
 - **Email**: Nodemailer
-- **Charts**: Recharts
 - **Notifications**: react-hot-toast
 
 ## 📦 Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/rekord.git
+git clone https://github.com/AnirbanDey-9497/Rekord
 cd rekord
 ```
 
@@ -301,8 +326,8 @@ MAILER_PASSWORD=your-email-password
 # OPEN_AI_KEY=your_openai_api_key
 
 # (Optional) Electron/Backend Host (if needed for integration)
-# ELECTRON_HOST=http://localhost:5173
-# NEXT_API_HOST=http://localhost:3000
+# ELECTRON_HOST=
+# NEXT_API_HOST=
 ```
 
 ## 🤝 Contributing
@@ -320,8 +345,3 @@ This project is licensed under the Apache License - see the [LICENSE](LICENSE) f
 ## 👥 Authors
 
 - Anirban Dey - Initial work
-
-## 🙏 Acknowledgments
-
-- Thanks to all contributors who have helped shape this project
-- Special thanks to the open-source community for the amazing tools and libraries
