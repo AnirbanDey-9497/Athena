@@ -15,7 +15,7 @@ A modern, AI-powered video recording, sharing, and analysis platform. Rekord int
 
 ## 🎥 Platform Overview
 
-Rekord is a powerful video recording and sharing platform that enables users to create, manage, and share video content seamlessly. Similar to Loom, it provides an intuitive interface for screen recording, video sharing, and collaboration.
+Rekord is a powerful video recording and sharing platform that enables users to create, manage, and share video content seamlessly. It provides an intuitive interface for screen recording, video sharing, and collaboration.
 
 ## ✨ User Features
 
